@@ -34,12 +34,11 @@
 
                 <ImageView
                     android:id="@+id/btnSettings"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="#1C212E"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="6dp"
                     android:src="@drawable/ic_settings"
                     app:tint="@color/mc_red" />
 
