@@ -30,9 +30,20 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private EditText etSearch;
-    private TextView tabMods;
-    private TextView tabTextures;
-    private TextView tabApks;
+
+    // Bottom Navigation Elements (Flat, No outlines)
+    private LinearLayout tabApks;
+    private LinearLayout tabTextures;
+    private LinearLayout tabMods;
+
+    private ImageView ivTabApks;
+    private ImageView ivTabTextures;
+    private ImageView ivTabMods;
+
+    private TextView tvTabApks;
+    private TextView tvTabTextures;
+    private TextView tvTabMods;
+
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView rvItems;
     private ProgressBar progressBar;
@@ -42,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvEmptySub;
 
     private ModAdapter modAdapter;
-    private String currentCategory = "mods";
+    private String currentCategory = "apks";
     private String currentSearch = "";
 
     @Override
@@ -58,14 +69,24 @@ public class MainActivity extends AppCompatActivity {
         setupSearch();
         setupListeners();
 
-        selectTab("mods");
+        selectTab("apks");
     }
 
     private void initViews() {
         etSearch = findViewById(R.id.etSearch);
-        tabMods = findViewById(R.id.tabMods);
-        tabTextures = findViewById(R.id.tabTextures);
+
         tabApks = findViewById(R.id.tabApks);
+        tabTextures = findViewById(R.id.tabTextures);
+        tabMods = findViewById(R.id.tabMods);
+
+        ivTabApks = findViewById(R.id.ivTabApks);
+        ivTabTextures = findViewById(R.id.ivTabTextures);
+        ivTabMods = findViewById(R.id.ivTabMods);
+
+        tvTabApks = findViewById(R.id.tvTabApks);
+        tvTabTextures = findViewById(R.id.tvTabTextures);
+        tvTabMods = findViewById(R.id.tvTabMods);
+
         swipeRefresh = findViewById(R.id.swipeRefresh);
         rvItems = findViewById(R.id.rvItems);
         progressBar = findViewById(R.id.progressBar);
@@ -103,29 +124,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupTabs() {
-        tabMods.setOnClickListener(v -> selectTab("mods"));
-        tabTextures.setOnClickListener(v -> selectTab("textures"));
         tabApks.setOnClickListener(v -> selectTab("apks"));
+        tabTextures.setOnClickListener(v -> selectTab("textures"));
+        tabMods.setOnClickListener(v -> selectTab("mods"));
     }
 
     private void selectTab(String category) {
         currentCategory = category;
 
-        updateTabStyle(tabMods, "mods".equals(category));
-        updateTabStyle(tabTextures, "textures".equals(category));
-        updateTabStyle(tabApks, "apks".equals(category));
+        int activeColor = ContextCompat.getColor(this, R.color.mc_red);
+        int inactiveColor = ContextCompat.getColor(this, R.color.text_muted);
+
+        // Update APK tab
+        boolean isApk = "apks".equals(category);
+        ivTabApks.setColorFilter(isApk ? activeColor : inactiveColor);
+        tvTabApks.setTextColor(isApk ? activeColor : inactiveColor);
+
+        // Update Textures tab
+        boolean isTexture = "textures".equals(category);
+        ivTabTextures.setColorFilter(isTexture ? activeColor : inactiveColor);
+        tvTabTextures.setTextColor(isTexture ? activeColor : inactiveColor);
+
+        // Update Mods tab
+        boolean isMod = "mods".equals(category);
+        ivTabMods.setColorFilter(isMod ? activeColor : inactiveColor);
+        tvTabMods.setTextColor(isMod ? activeColor : inactiveColor);
 
         loadItems(true);
-    }
-
-    private void updateTabStyle(TextView tab, boolean isSelected) {
-        if (isSelected) {
-            tab.setBackgroundResource(R.drawable.bg_tab_red_selected);
-            tab.setTextColor(ContextCompat.getColor(this, R.color.mc_red));
-        } else {
-            tab.setBackgroundResource(R.drawable.bg_tab_unselected);
-            tab.setTextColor(ContextCompat.getColor(this, R.color.text_body));
-        }
     }
 
     private void setupSearch() {
