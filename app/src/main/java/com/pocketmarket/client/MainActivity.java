@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     private void showEmptyState() {
         emptyStateLayout.setVisibility(View.VISIBLE);
         if ("apks".equals(currentCategory)) {
-            ivEmptyIcon.setImageResource(R.drawable.ic_android);
+            ivEmptyIcon.setImageResource(R.drawable.ic_apk_package);
             ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
             tvEmptyTitle.setText(R.string.empty_apks);
         } else if ("textures".equals(currentCategory)) {

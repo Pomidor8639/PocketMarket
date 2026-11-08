@@ -118,9 +118,9 @@ public class DetailActivity extends AppCompatActivity {
 
         if (isApk) {
             detailHeaderCard.setBackgroundResource(R.drawable.bg_card_apk);
-            ivDetailIcon.setImageResource(R.drawable.ic_android);
+            ivDetailIcon.setImageResource(R.drawable.ic_apk_package);
             ivDetailIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
-            tvDetailCategoryBadge.setText("АПК МОД (.APK)");
+            tvDetailCategoryBadge.setText("APK МОД (.APK)");
             tvDetailCategoryBadge.setTextColor(ContextCompat.getColor(this, R.color.mc_gold));
             btnDetailInstall.setBackgroundResource(R.drawable.btn_install_gold);
             btnDetailInstall.setText(R.string.download_apk);

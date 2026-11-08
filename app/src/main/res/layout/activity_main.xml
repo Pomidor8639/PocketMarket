@@ -155,9 +155,10 @@
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="64dp"
         android:background="#0E1015"
-        android:gravity="center_vertical"
+        android:gravity="center"
+        android:paddingVertical="4dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -174,20 +175,20 @@
 
             <ImageView
                 android:id="@+id/ivTabApks"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_android"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_apk_package"
                 app:tint="@color/text_muted" />
 
             <TextView
                 android:id="@+id/tvTabApks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/font_minecraft"
-                android:text="АПК"
+                android:text="APK"
                 android:textColor="@color/text_muted"
-                android:textSize="10sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- 2. Tab Textures -->
@@ -203,8 +204,8 @@
 
             <ImageView
                 android:id="@+id/ivTabTextures"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:src="@drawable/ic_palette"
                 app:tint="@color/text_muted" />
 
@@ -212,11 +213,11 @@
                 android:id="@+id/tvTabTextures"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/font_minecraft"
                 android:text="Текстуры"
                 android:textColor="@color/text_muted"
-                android:textSize="10sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- 3. Tab Mods -->
@@ -232,8 +233,8 @@
 
             <ImageView
                 android:id="@+id/ivTabMods"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:src="@drawable/ic_extension"
                 app:tint="@color/mc_red" />
 
@@ -241,11 +242,11 @@
                 android:id="@+id/tvTabMods"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:fontFamily="@font/font_minecraft"
                 android:text="Моды"
                 android:textColor="@color/mc_red"
-                android:textSize="10sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
     </LinearLayout>

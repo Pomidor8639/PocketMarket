@@ -71,9 +71,9 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
 
         if (isApk) {
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_apk);
-            holder.ivIcon.setImageResource(R.drawable.ic_android);
+            holder.ivIcon.setImageResource(R.drawable.ic_apk_package);
             holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_gold));
-            holder.tvCategoryBadge.setText("АПК МОД");
+            holder.tvCategoryBadge.setText("APK МОД");
             holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_gold));
             holder.btnAction.setText(R.string.download_apk);
         } else if (isTexture) {
