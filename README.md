@@ -1,13 +1,28 @@
 # PocketMarket
 
-```text
-+-------------------------------------------------------------+
-|                        POCKETMARKET                         |
-|      Minecraft Bedrock Edition: Mods, Textures, APK Mods    |
-+-------------------------------------------------------------+
-```
+> Независимый каталог и магазин модификаций, текстур и APK-сборок для Minecraft Bedrock Edition.
 
-PocketMarket представляет собой независимый каталог и магазин модификаций для мобильной версии Minecraft (Bedrock Edition). Проект включает нативное Android-приложение, написанное на Java с черным интерфейсом и фирменной типографикой Minecraft, а также централизованный REST API сервер.
+[![Language](https://img.shields.io/badge/Language-Java_17-orange.svg?style=flat-square)](#)
+[![Platform](https://img.shields.io/badge/Platform-Android_7.0+-brightgreen.svg?style=flat-square)](#)
+[![Backend](https://img.shields.io/badge/Backend-Node.js_Express-green.svg?style=flat-square)](#)
+[![License](https://img.shields.io/badge/License-GPLv2-blue.svg?style=flat-square)](LICENSE)
+[![Build](https://img.shields.io/badge/Build-Gradle_8.7-informational.svg?style=flat-square)](#)
+[![UI Theme](https://img.shields.io/badge/UI_Theme-Minecraft_Black-black.svg?style=flat-square)](#)
+
+---
+
+### Спецификация проекта
+
+| Параметр | Значение |
+| :--- | :--- |
+| Язык приложения | Java (Android SDK 34 / Java 17) |
+| Серверная часть | JavaScript (Node.js / Express) |
+| Минимальная версия | Android 7.0 (API 24) |
+| Целевая версия | Android 14.0 (API 34) |
+| Тема оформления | Глубокий черный стиль (Minecraft Dark `#0C0D11`) |
+| Шрифт | Пиксельный шрифт Minecraft (`minecraft.otf`) |
+| Иконки | Векторные наборы Google Material Icons |
+| Лицензия | GNU General Public License v2.0 (GPL-2.0) |
 
 ---
 
@@ -158,4 +173,4 @@ cd PocketMarket
 ---
 
 ## Лицензия
-Проект распространяется под лицензией MIT. Подробности в файле [LICENSE](LICENSE).
+Проект распространяется под лицензией GNU General Public License v2.0 (GPL-2.0). Полный текст лицензии доступен в файле [LICENSE](LICENSE).
