@@ -110,6 +110,7 @@
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:overScrollMode="never"
             app:layout_constraintBottom_toTopOf="@id/bottomNav"
             app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
@@ -118,6 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:overScrollMode="never"
                 android:paddingHorizontal="14dp"
                 android:paddingVertical="10dp"
                 tools:listitem="@layout/item_mod" />
@@ -445,7 +447,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:fontFamily="@font/font_minecraft"
-                android:text="Версия: 1.0.0"
+                android:text="PocketMarket v1.1.0 (сборка 2)"
                 android:textColor="@color/mc_red"
                 android:textSize="10sp" />
         </LinearLayout>

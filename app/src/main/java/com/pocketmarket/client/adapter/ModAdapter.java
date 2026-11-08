@@ -129,18 +129,8 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
     }
 
     private void animateItemEntrance(View view, int position) {
-        if (position > lastAnimatedPosition) {
-            view.setAlpha(0f);
-            view.setTranslationY(40f);
-            view.animate()
-                    .alpha(1f)
-                    .translationY(0f)
-                    .setDuration(280)
-                    .setStartDelay(Math.min(position * 35, 250))
-                    .setInterpolator(new DecelerateInterpolator())
-                    .start();
-            lastAnimatedPosition = position;
-        }
+        view.setAlpha(1.0f);
+        view.setTranslationY(0f);
     }
 
     private String formatDownloads(int count) {

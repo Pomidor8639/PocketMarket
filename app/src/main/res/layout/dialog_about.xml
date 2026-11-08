@@ -37,10 +37,11 @@
         android:background="#212433" />
 
     <TextView
+        android:id="@+id/tvAboutVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/font_minecraft"
-        android:text="PocketMarket v1.0.0"
+        android:text="PocketMarket v1.1.0 (Сборка 2)"
         android:textColor="@color/mc_red"
         android:textSize="14sp" />
 

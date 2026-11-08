@@ -20,6 +20,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.pocketmarket.client.adapter.ModAdapter;
@@ -30,6 +31,8 @@ import com.pocketmarket.client.utils.AuthManager;
 import com.pocketmarket.client.utils.FontUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Version filter
     private LinearLayout llVersionContainer;
-    private final String[] MC_VERSIONS = new String[]{"Все", "1.21.60", "1.21.50", "1.21", "1.20.80", "1.20.50", "1.20"};
+    private final List<String> mcVersionList = new ArrayList<>(Arrays.asList(
+            "Все", "26.40", "1.21.51", "1.21.31", "1.20.81", "1.20.51"
+    ));
 
     // Drawer user profile & version views
     private ImageView ivDrawerUserAvatar;
@@ -161,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(this));
+        if (rvItems.getItemAnimator() instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) rvItems.getItemAnimator()).setSupportsChangeAnimations(false);
+        }
         modAdapter = new ModAdapter(new ModAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(ModItem item) {
@@ -202,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         if (llVersionContainer == null) return;
         llVersionContainer.removeAllViews();
 
-        for (String version : MC_VERSIONS) {
+        for (String version : mcVersionList) {
             TextView chip = new TextView(this);
             chip.setText(version);
             chip.setTextSize(11);
@@ -237,6 +245,88 @@ public class MainActivity extends AppCompatActivity {
 
             llVersionContainer.addView(chip);
         }
+
+        // Custom version chip button
+        TextView customChip = new TextView(this);
+        customChip.setText("+ Ввести свою");
+        customChip.setTextSize(11);
+        customChip.setTypeface(FontUtils.getMinecraftFont(this));
+        LinearLayout.LayoutParams customLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        customLp.setMargins(0, 0, 16, 0);
+        customChip.setLayoutParams(customLp);
+        customChip.setBackgroundResource(R.drawable.bg_chip_version);
+        customChip.setTextColor(ContextCompat.getColor(this, R.color.mc_gold));
+        customChip.setOnClickListener(v -> {
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(60).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
+            }).start();
+            showCustomVersionDialog();
+        });
+        llVersionContainer.addView(customChip);
+    }
+
+    private void showCustomVersionDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_custom_version);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.9),
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+        }
+        FontUtils.applyMinecraftFont(dialog.findViewById(android.R.id.content));
+
+        EditText etVersion = dialog.findViewById(R.id.etCustomVersionInput);
+        View btnCancel = dialog.findViewById(R.id.btnCancelCustomVersion);
+        View btnApply = dialog.findViewById(R.id.btnApplyCustomVersion);
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnApply != null) {
+            btnApply.setOnClickListener(v -> {
+                if (etVersion == null) return;
+                String input = etVersion.getText().toString().trim();
+                if (input.isEmpty()) {
+                    Toast.makeText(this, "Введите версию", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!isValidCustomVersion(input)) {
+                    Toast.makeText(this, "Поддерживаются версии от 1.20.0 (например 1.20.51 или 26.40)", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                String cleanVer = input.replaceFirst("^[vV]", "").trim();
+                if (!mcVersionList.contains(cleanVer)) {
+                    mcVersionList.add(cleanVer);
+                }
+                currentVersion = cleanVer;
+                setupVersionFilter();
+                loadItems(true);
+                dialog.dismiss();
+            });
+        }
+
+        dialog.show();
+    }
+
+    private boolean isValidCustomVersion(String version) {
+        if (version == null) return false;
+        String v = version.trim().replaceFirst("^[vV]", "");
+        String[] parts = v.split("\\.");
+        if (parts.length < 2) return false;
+        try {
+            int major = Integer.parseInt(parts[0]);
+            int minor = Integer.parseInt(parts[1]);
+            if (major >= 26) return true;
+            if (major == 1 && minor >= 20) return true;
+        } catch (NumberFormatException ignored) {}
+        return false;
     }
 
     private void setupTabs() {
@@ -332,6 +422,18 @@ public class MainActivity extends AppCompatActivity {
 
         FontUtils.applyMinecraftFont(dialog.findViewById(android.R.id.content));
 
+        TextView tvAboutVersion = dialog.findViewById(R.id.tvAboutVersion);
+        if (tvAboutVersion != null) {
+            String verName = "1.1.0";
+            int verCode = 2;
+            try {
+                android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                verName = pi.versionName;
+                verCode = pi.versionCode;
+            } catch (Exception ignored) {}
+            tvAboutVersion.setText("PocketMarket v" + verName + " (Сборка " + verCode + ")");
+        }
+
         View btnGithub = dialog.findViewById(R.id.btnAboutGithub);
         if (btnGithub != null) {
             btnGithub.setOnClickListener(v -> {
@@ -392,8 +494,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDrawerUserSection() {
         if (tvDrawerVersion != null) {
-            String verName = "1.0.0";
-            int verCode = 1;
+            String verName = "1.1.0";
+            int verCode = 2;
             try {
                 android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
                 verName = pi.versionName;
@@ -405,7 +507,10 @@ public class MainActivity extends AppCompatActivity {
         AuthManager auth = AuthManager.getInstance(this);
         if (auth.isLoggedIn()) {
             if (tvDrawerUserName != null) tvDrawerUserName.setText(auth.getNickname());
-            if (tvDrawerUserEmail != null) tvDrawerUserEmail.setText(auth.getEmail());
+            if (tvDrawerUserEmail != null) {
+                tvDrawerUserEmail.setVisibility(View.VISIBLE);
+                tvDrawerUserEmail.setText(auth.getEmail());
+            }
             if (tvDrawerUserStatus != null) {
                 tvDrawerUserStatus.setText("АВТОРИЗОВАН");
                 tvDrawerUserStatus.setTextColor(ContextCompat.getColor(this, R.color.mc_green));
@@ -417,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             if (tvDrawerUserName != null) tvDrawerUserName.setText("Гостевой режим");
-            if (tvDrawerUserEmail != null) tvDrawerUserEmail.setText("Лайки недоступны");
+            if (tvDrawerUserEmail != null) tvDrawerUserEmail.setVisibility(View.GONE);
             if (tvDrawerUserStatus != null) {
                 tvDrawerUserStatus.setText("ГОСТЕВОЙ РЕЖИМ");
                 tvDrawerUserStatus.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
