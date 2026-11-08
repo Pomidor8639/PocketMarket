@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import com.pocketmarket.client.model.ModItem;
 import com.pocketmarket.client.model.Review;
+import com.pocketmarket.client.utils.AuthManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -87,6 +88,10 @@ public class PocketMarketApi {
     }
 
     public void fetchItems(String category, String search, ApiCallback<List<ModItem>> callback) {
+        fetchItems(category, search, null, callback);
+    }
+
+    public void fetchItems(String category, String search, String version, ApiCallback<List<ModItem>> callback) {
         executor.execute(() -> {
             try {
                 StringBuilder urlBuilder = new StringBuilder(getBaseUrl()).append("/api/items?");
@@ -95,6 +100,9 @@ public class PocketMarketApi {
                 }
                 if (search != null && !search.trim().isEmpty()) {
                     urlBuilder.append("search=").append(URLEncoder.encode(search.trim(), "UTF-8")).append("&");
+                }
+                if (version != null && !version.trim().isEmpty() && !"all".equalsIgnoreCase(version.trim())) {
+                    urlBuilder.append("version=").append(URLEncoder.encode(version.trim(), "UTF-8")).append("&");
                 }
 
                 String response = executeGet(urlBuilder.toString());
@@ -107,6 +115,61 @@ public class PocketMarketApi {
                 }
 
                 mainHandler.post(() -> callback.onSuccess(items));
+            } catch (Exception e) {
+                mainHandler.post(() -> callback.onError(e));
+            }
+        });
+    }
+
+    public static class LikeResult {
+        public boolean liked;
+        public int likes;
+    }
+
+    public void toggleLike(String itemId, ApiCallback<LikeResult> callback) {
+        executor.execute(() -> {
+            try {
+                String url = getBaseUrl() + "/api/items/" + URLEncoder.encode(itemId, "UTF-8") + "/like";
+                String response = executePost(url, "{}");
+                JSONObject json = new JSONObject(response);
+                LikeResult res = new LikeResult();
+                res.liked = json.optBoolean("liked", false);
+                res.likes = json.optInt("likes", 0);
+                mainHandler.post(() -> callback.onSuccess(res));
+            } catch (Exception e) {
+                mainHandler.post(() -> callback.onError(e));
+            }
+        });
+    }
+
+    public static class AuthResult {
+        public boolean success;
+        public String token;
+        public String id;
+        public String email;
+        public String nickname;
+    }
+
+    public void accountAuth(String email, String nickname, String password, ApiCallback<AuthResult> callback) {
+        executor.execute(() -> {
+            try {
+                String url = getBaseUrl() + "/api/auth/account";
+                JSONObject req = new JSONObject();
+                req.put("email", email);
+                req.put("nickname", nickname);
+                req.put("password", password);
+                String response = executePost(url, req.toString());
+                JSONObject json = new JSONObject(response);
+                AuthResult res = new AuthResult();
+                res.success = json.optBoolean("success", false);
+                res.token = json.optString("token", "");
+                JSONObject u = json.optJSONObject("user");
+                if (u != null) {
+                    res.id = u.optString("id", "");
+                    res.email = u.optString("email", "");
+                    res.nickname = u.optString("nickname", "");
+                }
+                mainHandler.post(() -> callback.onSuccess(res));
             } catch (Exception e) {
                 mainHandler.post(() -> callback.onError(e));
             }
@@ -168,6 +231,9 @@ public class PocketMarketApi {
         conn.setConnectTimeout(8000);
         conn.setReadTimeout(10000);
         conn.setRequestProperty("Accept", "application/json");
+        if (AuthManager.getInstance() != null && AuthManager.getInstance().isLoggedIn()) {
+            conn.setRequestProperty("Authorization", "Bearer " + AuthManager.getInstance().getToken());
+        }
 
         int code = conn.getResponseCode();
         if (code < 200 || code >= 300) {
@@ -195,6 +261,9 @@ public class PocketMarketApi {
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         conn.setRequestProperty("Accept", "application/json");
+        if (AuthManager.getInstance() != null && AuthManager.getInstance().isLoggedIn()) {
+            conn.setRequestProperty("Authorization", "Bearer " + AuthManager.getInstance().getToken());
+        }
 
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonBody.getBytes(StandardCharsets.UTF_8);
@@ -231,6 +300,9 @@ public class PocketMarketApi {
         item.setFileSize(json.optString("fileSize"));
         item.setFileSizeBytes(json.optLong("fileSizeBytes"));
         item.setDownloads(json.optInt("downloads"));
+        item.setViews(json.optInt("views", 0));
+        item.setLikes(json.optInt("likes", 0));
+        item.setLiked(json.optBoolean("isLiked", false));
         item.setRating(json.optDouble("rating", 5.0));
         item.setRatingsCount(json.optInt("ratingsCount"));
         item.setShortDescription(json.optString("shortDescription"));

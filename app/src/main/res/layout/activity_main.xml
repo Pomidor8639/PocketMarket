@@ -86,6 +86,23 @@
                     android:textColorHint="@color/text_muted"
                     android:textSize="12sp" />
             </LinearLayout>
+
+            <!-- Minecraft Version Filter Chips (1.20+) -->
+            <HorizontalScrollView
+                android:id="@+id/hsvVersionFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/llVersionContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
         </LinearLayout>
 
         <!-- Main Content List with Swipe-to-refresh -->
@@ -269,6 +286,7 @@
         android:orientation="vertical">
 
         <!-- Drawer Header -->
+        <!-- Drawer Header / User Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -278,27 +296,56 @@
             android:paddingTop="36dp"
             android:paddingBottom="20dp">
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_settings"
-                app:tint="@color/mc_red" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivDrawerUserAvatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_account"
+                    app:tint="@color/mc_red" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDrawerUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font_minecraft"
+                        android:text="Игрок"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDrawerUserEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="@font/font_minecraft"
+                        android:text="Гостевой режим"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/tvDrawerUserStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/badge_category"
                 android:fontFamily="@font/font_minecraft"
-                android:text="@string/app_name"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/font_minecraft"
-                android:text="Bedrock Edition • v1.0.0"
+                android:text="ГОСТЕВОЙ РЕЖИМ"
                 android:textColor="@color/text_muted"
                 android:textSize="9sp" />
         </LinearLayout>
@@ -344,6 +391,36 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
+            <!-- Item: Войти / Выйти из аккаунта -->
+            <LinearLayout
+                android:id="@+id/navItemAuthAction"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
+
+                <ImageView
+                    android:id="@+id/ivNavAuthIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_logout"
+                    app:tint="@color/mc_red" />
+
+                <TextView
+                    android:id="@+id/tvNavAuthTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:fontFamily="@font/font_minecraft"
+                    android:text="Выйти из аккаунта"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Drawer Footer -->
@@ -360,6 +437,17 @@
                 android:text="GNU GPL-3.0 License"
                 android:textColor="@color/text_muted"
                 android:textSize="9sp" />
+
+            <!-- App Version at the very bottom of Drawer -->
+            <TextView
+                android:id="@+id/tvDrawerVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/font_minecraft"
+                android:text="Версия: 1.0.0"
+                android:textColor="@color/mc_red"
+                android:textSize="10sp" />
         </LinearLayout>
 
     </LinearLayout>

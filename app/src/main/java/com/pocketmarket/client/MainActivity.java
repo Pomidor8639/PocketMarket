@@ -26,6 +26,7 @@ import com.pocketmarket.client.adapter.ModAdapter;
 import com.pocketmarket.client.api.PocketMarketApi;
 import com.pocketmarket.client.installer.ModInstaller;
 import com.pocketmarket.client.model.ModItem;
+import com.pocketmarket.client.utils.AuthManager;
 import com.pocketmarket.client.utils.FontUtils;
 
 import java.io.File;
@@ -62,22 +63,53 @@ public class MainActivity extends AppCompatActivity {
     private ModAdapter modAdapter;
     private String currentCategory = "apks";
     private String currentSearch = "";
+    private String currentVersion = "all";
+
+    // Version filter
+    private LinearLayout llVersionContainer;
+    private final String[] MC_VERSIONS = new String[]{"Все", "1.21.60", "1.21.50", "1.21", "1.20.80", "1.20.50", "1.20"};
+
+    // Drawer user profile & version views
+    private ImageView ivDrawerUserAvatar;
+    private TextView tvDrawerUserName;
+    private TextView tvDrawerUserEmail;
+    private TextView tvDrawerUserStatus;
+    private LinearLayout navItemAuthAction;
+    private ImageView ivNavAuthIcon;
+    private TextView tvNavAuthTitle;
+    private TextView tvDrawerVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        AuthManager.init(this);
+        if (AuthManager.getInstance().isFirstLaunch()) {
+            startActivity(new Intent(this, AuthActivity.class));
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.activity_main);
         FontUtils.applyMinecraftFont(findViewById(android.R.id.content));
 
         initViews();
         setupRecyclerView();
+        setupVersionFilter();
         setupTabs();
         setupSearch();
         setupListeners();
+        updateDrawerUserSection();
 
         selectTab("apks");
         checkAppUpdates();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ModInstaller.resumePendingInstallIfPossible(this);
+        updateDrawerUserSection();
     }
 
     private void initViews() {
@@ -86,6 +118,16 @@ public class MainActivity extends AppCompatActivity {
         navItemAbout = findViewById(R.id.navItemAbout);
 
         etSearch = findViewById(R.id.etSearch);
+        llVersionContainer = findViewById(R.id.llVersionContainer);
+
+        ivDrawerUserAvatar = findViewById(R.id.ivDrawerUserAvatar);
+        tvDrawerUserName = findViewById(R.id.tvDrawerUserName);
+        tvDrawerUserEmail = findViewById(R.id.tvDrawerUserEmail);
+        tvDrawerUserStatus = findViewById(R.id.tvDrawerUserStatus);
+        navItemAuthAction = findViewById(R.id.navItemAuthAction);
+        ivNavAuthIcon = findViewById(R.id.ivNavAuthIcon);
+        tvNavAuthTitle = findViewById(R.id.tvNavAuthTitle);
+        tvDrawerVersion = findViewById(R.id.tvDrawerVersion);
 
         tabApks = findViewById(R.id.tabApks);
         tabTextures = findViewById(R.id.tabTextures);
@@ -131,8 +173,70 @@ public class MainActivity extends AppCompatActivity {
             public void onInstallClick(ModItem item) {
                 quickInstall(item);
             }
+
+            @Override
+            public void onLikeClick(ModItem item, int position) {
+                if (!AuthManager.getInstance(MainActivity.this).isLoggedIn()) {
+                    showLoginPrompt();
+                    return;
+                }
+                PocketMarketApi.getInstance().toggleLike(item.getId(), new PocketMarketApi.ApiCallback<PocketMarketApi.LikeResult>() {
+                    @Override
+                    public void onSuccess(PocketMarketApi.LikeResult result) {
+                        item.setLiked(result.liked);
+                        item.setLikes(result.likes);
+                        modAdapter.notifyItemChanged(position);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Toast.makeText(MainActivity.this, "Ошибка отметки: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
         rvItems.setAdapter(modAdapter);
+    }
+
+    private void setupVersionFilter() {
+        if (llVersionContainer == null) return;
+        llVersionContainer.removeAllViews();
+
+        for (String version : MC_VERSIONS) {
+            TextView chip = new TextView(this);
+            chip.setText(version);
+            chip.setTextSize(11);
+            chip.setTypeface(FontUtils.getMinecraftFont(this));
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            lp.setMargins(0, 0, 16, 0);
+            chip.setLayoutParams(lp);
+
+            boolean isSelected = ("Все".equals(version) && "all".equals(currentVersion)) ||
+                    version.equals(currentVersion);
+
+            if (isSelected) {
+                chip.setBackgroundResource(R.drawable.bg_chip_version_selected);
+                chip.setTextColor(ContextCompat.getColor(this, R.color.mc_red));
+            } else {
+                chip.setBackgroundResource(R.drawable.bg_chip_version);
+                chip.setTextColor(ContextCompat.getColor(this, R.color.text_body));
+            }
+
+            chip.setOnClickListener(v -> {
+                v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(60).withEndAction(() -> {
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
+                }).start();
+                currentVersion = "Все".equals(version) ? "all" : version;
+                setupVersionFilter();
+                loadItems(true);
+            });
+
+            llVersionContainer.addView(chip);
+        }
     }
 
     private void setupTabs() {
@@ -262,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        PocketMarketApi.getInstance().fetchItems(currentCategory, currentSearch, new PocketMarketApi.ApiCallback<List<ModItem>>() {
+        PocketMarketApi.getInstance().fetchItems(currentCategory, currentSearch, currentVersion, new PocketMarketApi.ApiCallback<List<ModItem>>() {
             @Override
             public void onSuccess(List<ModItem> items) {
                 progressBar.setVisibility(View.GONE);
@@ -284,6 +388,75 @@ public class MainActivity extends AppCompatActivity {
                 showEmptyState();
             }
         });
+    }
+
+    private void updateDrawerUserSection() {
+        if (tvDrawerVersion != null) {
+            String verName = "1.0.0";
+            int verCode = 1;
+            try {
+                android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                verName = pi.versionName;
+                verCode = pi.versionCode;
+            } catch (Exception ignored) {}
+            tvDrawerVersion.setText("PocketMarket v" + verName + " (сборка " + verCode + ")");
+        }
+
+        AuthManager auth = AuthManager.getInstance(this);
+        if (auth.isLoggedIn()) {
+            if (tvDrawerUserName != null) tvDrawerUserName.setText(auth.getNickname());
+            if (tvDrawerUserEmail != null) tvDrawerUserEmail.setText(auth.getEmail());
+            if (tvDrawerUserStatus != null) {
+                tvDrawerUserStatus.setText("АВТОРИЗОВАН");
+                tvDrawerUserStatus.setTextColor(ContextCompat.getColor(this, R.color.mc_green));
+            }
+            if (tvNavAuthTitle != null) tvNavAuthTitle.setText("Выйти из аккаунта");
+            if (ivNavAuthIcon != null) ivNavAuthIcon.setImageResource(R.drawable.ic_logout);
+            if (navItemAuthAction != null) {
+                navItemAuthAction.setOnClickListener(v -> showLogoutConfirmationDialog());
+            }
+        } else {
+            if (tvDrawerUserName != null) tvDrawerUserName.setText("Гостевой режим");
+            if (tvDrawerUserEmail != null) tvDrawerUserEmail.setText("Лайки недоступны");
+            if (tvDrawerUserStatus != null) {
+                tvDrawerUserStatus.setText("ГОСТЕВОЙ РЕЖИМ");
+                tvDrawerUserStatus.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
+            }
+            if (tvNavAuthTitle != null) tvNavAuthTitle.setText("Войти в аккаунт");
+            if (ivNavAuthIcon != null) ivNavAuthIcon.setImageResource(R.drawable.ic_login);
+            if (navItemAuthAction != null) {
+                navItemAuthAction.setOnClickListener(v -> {
+                    if (drawerLayout != null) drawerLayout.closeDrawer(GravityCompat.START);
+                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                });
+            }
+        }
+    }
+
+    private void showLogoutConfirmationDialog() {
+        if (drawerLayout != null) drawerLayout.closeDrawer(GravityCompat.START);
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Выход из аккаунта")
+                .setMessage("Вы уверены, что хотите выйти из учетной записи?")
+                .setPositiveButton("ВЫЙТИ", (d, w) -> {
+                    AuthManager.getInstance(MainActivity.this).logout();
+                    Toast.makeText(MainActivity.this, "Вы вышли из учетной записи", Toast.LENGTH_SHORT).show();
+                    updateDrawerUserSection();
+                    loadItems(true);
+                })
+                .setNegativeButton("ОТМЕНА", null)
+                .show();
+    }
+
+    private void showLoginPrompt() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Требуется вход")
+                .setMessage("Для того чтобы ставить отметки «Нравится», необходимо войти в аккаунт.")
+                .setPositiveButton("ВОЙТИ", (d, w) -> {
+                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                })
+                .setNegativeButton("ОТМЕНА", null)
+                .show();
     }
 
     private void showEmptyState() {

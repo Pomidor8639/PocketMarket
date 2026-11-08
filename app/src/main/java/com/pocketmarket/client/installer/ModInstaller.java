@@ -37,6 +37,36 @@ public class ModInstaller {
 
     private static final ExecutorService downloadExecutor = Executors.newSingleThreadExecutor();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private static File pendingApkFile = null;
+    private static ModItem pendingApkItem = null;
+
+    public static boolean checkInstallPermission(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return activity.getPackageManager().canRequestPackageInstalls();
+        }
+        return true;
+    }
+
+    public static void requestInstallPermission(Activity activity, File apkFile, ModItem item) {
+        pendingApkFile = apkFile;
+        pendingApkItem = item;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Toast.makeText(activity, "Включите разрешение на установку. После возврата файл запустится автоматически.", Toast.LENGTH_LONG).show();
+            Intent settingsIntent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+            settingsIntent.setData(Uri.parse("package:" + activity.getPackageName()));
+            activity.startActivity(settingsIntent);
+        }
+    }
+
+    public static void resumePendingInstallIfPossible(Activity activity) {
+        if (pendingApkFile != null && pendingApkFile.exists() && checkInstallPermission(activity)) {
+            File fileToInstall = pendingApkFile;
+            ModItem itemToInstall = pendingApkItem;
+            pendingApkFile = null;
+            pendingApkItem = null;
+            install(activity, itemToInstall != null ? itemToInstall : new ModItem(), fileToInstall);
+        }
+    }
 
     public static String formatBytes(long bytes) {
         if (bytes <= 0) return "0 Б";
@@ -138,16 +168,23 @@ public class ModInstaller {
             return;
         }
 
+        if (item != null && item.isApk()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !activity.getPackageManager().canRequestPackageInstalls()) {
+                requestInstallPermission(activity, downloadedFile, item);
+                return;
+            }
+        }
+
         Uri fileUri = FileProvider.getUriForFile(
                 activity,
                 activity.getPackageName() + ".provider",
                 downloadedFile
         );
 
-        if (item.isApk()) {
-            installApk(activity, fileUri);
+        if (item != null && item.isApk()) {
+            installApk(activity, downloadedFile, fileUri);
         } else {
-            installToMinecraft(activity, fileUri, item.getFileType());
+            installToMinecraft(activity, fileUri, item != null ? item.getFileType() : "mcaddon");
         }
     }
 
@@ -174,14 +211,11 @@ public class ModInstaller {
         }
     }
 
-    private static void installApk(Activity activity, Uri fileUri) {
+    private static void installApk(Activity activity, File downloadedFile, Uri fileUri) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 if (!activity.getPackageManager().canRequestPackageInstalls()) {
-                    Toast.makeText(activity, "Разрешите установку из этого источника в настройках", Toast.LENGTH_LONG).show();
-                    Intent settingsIntent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-                    settingsIntent.setData(Uri.parse("package:" + activity.getPackageName()));
-                    activity.startActivity(settingsIntent);
+                    requestInstallPermission(activity, downloadedFile, null);
                     return;
                 }
             }

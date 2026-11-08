@@ -26,6 +26,7 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
     public interface OnItemClickListener {
         void onItemClick(ModItem item);
         void onInstallClick(ModItem item);
+        void onLikeClick(ModItem item, int position);
     }
 
     private final List<ModItem> items = new ArrayList<>();
@@ -98,6 +99,19 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
             holder.btnAction.setText(R.string.install);
         }
 
+        // Heart Like state
+        holder.tvLikesCount.setText(String.valueOf(item.getLikes()));
+        holder.ivHeart.setImageResource(item.isLiked() ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
+
+        holder.btnLike.setOnClickListener(v -> {
+            v.animate().scaleX(0.85f).scaleY(0.85f).setDuration(80).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
+            }).start();
+            if (listener != null) {
+                listener.onLikeClick(item, holder.getAdapterPosition());
+            }
+        });
+
         // Tactile press animations
         holder.cardContainer.setOnClickListener(v -> {
             v.animate().scaleX(0.97f).scaleY(0.97f).setDuration(70).withEndAction(() -> {
@@ -151,6 +165,9 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         TextView tvDownloads;
         TextView tvFileSize;
         TextView tvMcVersion;
+        LinearLayout btnLike;
+        ImageView ivHeart;
+        TextView tvLikesCount;
         Button btnAction;
 
         public ModViewHolder(@NonNull View itemView) {
@@ -164,6 +181,9 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
             tvDownloads = itemView.findViewById(R.id.tvDownloads);
             tvFileSize = itemView.findViewById(R.id.tvFileSize);
             tvMcVersion = itemView.findViewById(R.id.tvMcVersion);
+            btnLike = itemView.findViewById(R.id.btnLike);
+            ivHeart = itemView.findViewById(R.id.ivHeart);
+            tvLikesCount = itemView.findViewById(R.id.tvLikesCount);
             btnAction = itemView.findViewById(R.id.btnAction);
         }
     }

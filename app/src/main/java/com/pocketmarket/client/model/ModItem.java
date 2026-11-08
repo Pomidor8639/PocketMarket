@@ -16,6 +16,9 @@ public class ModItem implements Serializable {
     private String fileSize;
     private long fileSizeBytes;
     private int downloads;
+    private int views;
+    private int likes;
+    private boolean isLiked;
     private double rating;
     private int ratingsCount;
     private String shortDescription;
@@ -224,5 +227,29 @@ public class ModItem implements Serializable {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

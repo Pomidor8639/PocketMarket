@@ -1,5 +1,6 @@
 package com.pocketmarket.client;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import com.pocketmarket.client.api.PocketMarketApi;
 import com.pocketmarket.client.installer.ModInstaller;
 import com.pocketmarket.client.model.ModItem;
+import com.pocketmarket.client.utils.AuthManager;
 import com.pocketmarket.client.utils.FontUtils;
 
 import java.io.File;
@@ -37,6 +39,10 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tvDetailDownloads;
     private TextView tvDetailSize;
     private TextView tvDetailMcVersionSpec;
+
+    private View btnDetailLike;
+    private ImageView ivDetailHeart;
+    private TextView tvDetailLikesCount;
 
     private Button btnDetailInstall;
     private ProgressBar detailProgressBar;
@@ -82,6 +88,10 @@ public class DetailActivity extends AppCompatActivity {
         tvDetailDownloads = findViewById(R.id.tvDetailDownloads);
         tvDetailSize = findViewById(R.id.tvDetailSize);
         tvDetailMcVersionSpec = findViewById(R.id.tvDetailMcVersionSpec);
+
+        btnDetailLike = findViewById(R.id.btnDetailLike);
+        ivDetailHeart = findViewById(R.id.ivDetailHeart);
+        tvDetailLikesCount = findViewById(R.id.tvDetailLikesCount);
 
         btnDetailInstall = findViewById(R.id.btnDetailInstall);
         detailProgressBar = findViewById(R.id.detailProgressBar);
@@ -146,10 +156,32 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             changelogCard.setVisibility(View.GONE);
         }
+
+        if (tvDetailLikesCount != null) {
+            tvDetailLikesCount.setText(String.valueOf(modItem.getLikes()));
+        }
+        if (ivDetailHeart != null) {
+            ivDetailHeart.setImageResource(modItem.isLiked() ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ModInstaller.resumePendingInstallIfPossible(this);
     }
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
+
+        if (btnDetailLike != null) {
+            btnDetailLike.setOnClickListener(v -> {
+                v.animate().scaleX(0.85f).scaleY(0.85f).setDuration(80).withEndAction(() -> {
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
+                }).start();
+                handleLikeClick();
+            });
+        }
 
         btnDetailInstall.setOnClickListener(v -> {
             v.animate().scaleX(0.96f).scaleY(0.96f).setDuration(70).withEndAction(() -> {
@@ -157,6 +189,39 @@ public class DetailActivity extends AppCompatActivity {
                 startDownloadAndInstall();
             }).start();
         });
+    }
+
+    private void handleLikeClick() {
+        if (!AuthManager.getInstance(this).isLoggedIn()) {
+            showLoginPrompt();
+            return;
+        }
+
+        PocketMarketApi.getInstance().toggleLike(modItem.getId(), new PocketMarketApi.ApiCallback<PocketMarketApi.LikeResult>() {
+            @Override
+            public void onSuccess(PocketMarketApi.LikeResult result) {
+                modItem.setLiked(result.liked);
+                modItem.setLikes(result.likes);
+                tvDetailLikesCount.setText(String.valueOf(result.likes));
+                ivDetailHeart.setImageResource(result.liked ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(DetailActivity.this, "Ошибка отметки: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showLoginPrompt() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Требуется вход")
+                .setMessage("Для того чтобы ставить отметки «Нравится», необходимо войти в аккаунт.")
+                .setPositiveButton("ВОЙТИ", (d, w) -> {
+                    startActivity(new Intent(DetailActivity.this, AuthActivity.class));
+                })
+                .setNegativeButton("ОТМЕНА", null)
+                .show();
     }
 
     private void startDownloadAndInstall() {
