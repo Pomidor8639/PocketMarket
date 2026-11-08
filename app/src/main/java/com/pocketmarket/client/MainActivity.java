@@ -1,10 +1,12 @@
 package com.pocketmarket.client;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,6 +33,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private DrawerLayout drawerLayout;
+    private ImageView btnSettings;
+    private LinearLayout navItemAbout;
     private EditText etSearch;
 
     // Bottom Navigation Elements (Flat, No outlines)
@@ -73,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        drawerLayout = findViewById(R.id.drawerLayout);
+        btnSettings = findViewById(R.id.btnSettings);
+        navItemAbout = findViewById(R.id.navItemAbout);
+
         etSearch = findViewById(R.id.etSearch);
 
         tabApks = findViewById(R.id.tabApks);
@@ -173,6 +184,64 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListeners() {
         swipeRefresh.setOnRefreshListener(() -> loadItems(false));
+
+        if (btnSettings != null) {
+            btnSettings.setOnClickListener(v -> {
+                // Smooth gear rotation animation (360 degrees)
+                btnSettings.animate()
+                        .rotationBy(360f)
+                        .setDuration(450)
+                        .setInterpolator(new DecelerateInterpolator())
+                        .start();
+
+                if (drawerLayout != null) {
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                    } else {
+                        drawerLayout.openDrawer(GravityCompat.START);
+                    }
+                }
+            });
+        }
+
+        if (navItemAbout != null) {
+            navItemAbout.setOnClickListener(v -> {
+                if (drawerLayout != null) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+                showAboutDialog();
+            });
+        }
+    }
+
+    private void showAboutDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_about);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.9),
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+        }
+
+        FontUtils.applyMinecraftFont(dialog.findViewById(android.R.id.content));
+
+        View btnClose = dialog.findViewById(R.id.btnAboutClose);
+        if (btnClose != null) {
+            btnClose.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void loadItems(boolean showLoading) {
