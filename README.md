@@ -5,7 +5,6 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](#)
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](#)
-[![Backend](https://img.shields.io/badge/Backend-Node.js-informational.svg)](#)
 [![Gradle](https://img.shields.io/badge/Gradle-8.7-blueviolet.svg)](#)
 
 ---
@@ -15,11 +14,10 @@
 | Параметр | Значение |
 | :--- | :--- |
 | Язык приложения | Java (Android SDK 34 / Java 17) |
-| Серверная часть | JavaScript (Node.js / Express) |
 | Минимальная версия | Android 7.0 (API 24) |
 | Целевая версия | Android 14.0 (API 34) |
 | Тема оформления | Глубокий черный стиль (Minecraft Dark `#0C0D11`) |
-| Шрифт | Пиксельный шрифт Minecraft (`minecraft.otf`) |
+| Шрифт | Пиксельный шрифт Minecraft (`minecraft.ttf`) |
 | Иконки | Векторные наборы Google Material Icons |
 | Лицензия | GNU General Public License v3.0 (GPL-3.0) |
 
@@ -29,9 +27,8 @@
 
 Готовая сборка приложения скомпилирована и доступна для прямой загрузки:
 
-* **Прямая ссылка с сервера**: [Скачать PocketMarket.apk (v1.0.0)](http://87.120.187.254:3000/files/PocketMarket.apk)
 * **Файл в репозитории**: [releases/PocketMarket.apk](releases/PocketMarket.apk)
-* **Размер файла**: ~5.8 МБ
+* **Размер файла**: ~6.2 МБ
 * **Минимальная версия Android**: Android 7.0 (API 24)
 * **Целевая версия Android**: Android 14.0 (API 34)
 
@@ -71,27 +68,6 @@
 * Приложение проверяет системное право `REQUEST_INSTALL_PACKAGES`.
 * Если разрешение не выдано, открывается системное окно настроек `ACTION_MANAGE_UNKNOWN_APP_SOURCES`.
 * После подтверждения запускается системный установщик Android через `Intent.ACTION_VIEW` с типом `application/vnd.android.package-archive`.
-
----
-
-## Серверная часть (REST API)
-
-Бэкенд функционирует на базе Node.js и развернут на сервере в качестве фоновой службы `systemd`.
-
-* **Адрес API**: `http://87.120.187.254:3000`
-* **Веб-каталог в браузере**: `http://87.120.187.254:3000/`
-
-### Спецификация эндпоинтов:
-
-| Метод | Эндпоинт | Назначение |
-| :--- | :--- | :--- |
-| `GET` | `/api/status` | Проверка состояния сервера, количества элементов и общего числа загрузок |
-| `GET` | `/api/categories` | Список категорий (Моды, Текстурпаки, АПК Моды) |
-| `GET` | `/api/items` | Получение каталога. Фильтры: `category`, `search`, `sort`, `page`, `limit` |
-| `GET` | `/api/items/:id` | Детальная карточка конкретного элемента |
-| `POST` | `/api/items/:id/download` | Регистрация факта загрузки и генерация прямой ссылки на файл |
-| `POST` | `/api/items/:id/rate` | Отправка оценки (от 1 до 5) и текстового комментария |
-| `POST` | `/api/items` | Добавление новой модификации через API |
 
 ---
 

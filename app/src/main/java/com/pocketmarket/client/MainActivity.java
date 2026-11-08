@@ -269,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
                 showEmptyState();
-                Toast.makeText(MainActivity.this, "Сервер онлайн. Каталог пуст или обновляется.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -289,7 +288,9 @@ public class MainActivity extends AppCompatActivity {
             ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_red));
             tvEmptyTitle.setText(R.string.empty_mods);
         }
-        tvEmptySub.setText(R.string.empty_sub);
+        if (tvEmptySub != null) {
+            tvEmptySub.setVisibility(View.GONE);
+        }
     }
 
     private void quickInstall(ModItem item) {
@@ -322,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-                Toast.makeText(MainActivity.this, "Ошибка сервера: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

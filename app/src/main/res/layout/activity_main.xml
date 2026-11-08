@@ -153,12 +153,7 @@
                 android:id="@+id/tvEmptySub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:fontFamily="@font/font_minecraft"
-                android:gravity="center"
-                android:text="@string/empty_sub"
-                android:textColor="@color/text_muted"
-                android:textSize="9sp" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- Bottom Navigation Bar: Minimalist, Flat, No outlines/strokes (Icon + Label) -->

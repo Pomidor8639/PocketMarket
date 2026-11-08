@@ -23,6 +23,6 @@
     <string name="permission_install_unknown">Пожалуйста, включите разрешение на установку APK в настройках безопасности.</string>
     <string name="empty_mods">В категории Моды пока нет файлов</string>
     <string name="empty_textures">В категории Текстуры пока нет файлов</string>
-    <string name="empty_apks">В категории АПК Моды пока нет файлов</string>
-    <string name="empty_sub">Добавьте реальные файлы через веб-панель</string>
+    <string name="empty_apks">В категории APK Моды пока нет файлов</string>
+    <string name="empty_sub"></string>
 </resources>

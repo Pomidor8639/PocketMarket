@@ -216,7 +216,7 @@ public class DetailActivity extends AppCompatActivity {
                 btnDetailInstall.setEnabled(true);
                 detailProgressBar.setVisibility(View.GONE);
                 tvDownloadStatus.setVisibility(View.GONE);
-                Toast.makeText(DetailActivity.this, "Ошибка сервера: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(DetailActivity.this, "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

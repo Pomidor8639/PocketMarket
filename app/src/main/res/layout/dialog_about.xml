@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/font_minecraft"
-        android:text="Лицензия: GNU GPLv3\nБэкенд: Node.js (Сервер онлайн)\nКлиент: Java (Android 7.0+)"
+        android:text="Лицензия: GNU GPLv3\nПлатформа: Android 7.0+\nВерсия: 1.0.0"
         android:textColor="@color/text_muted"
         android:textSize="9sp" />
 
