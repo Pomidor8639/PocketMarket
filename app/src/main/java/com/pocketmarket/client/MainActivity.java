@@ -329,10 +329,13 @@ public class MainActivity extends AppCompatActivity {
         if (ivIcon != null) {
             if (item.isApk()) {
                 ivIcon.setImageResource(R.drawable.apk_install_48);
+                ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
             } else if ("textures".equalsIgnoreCase(item.getCategory())) {
                 ivIcon.setImageResource(R.drawable.ic_palette);
+                ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_aqua));
             } else {
                 ivIcon.setImageResource(R.drawable.ic_extension);
+                ivIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_green));
             }
         }
 

@@ -78,7 +78,7 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
             // Clean flat APK card without extra border outlines
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_apk);
             holder.ivIcon.setImageResource(R.drawable.apk_install_48);
-            holder.ivIcon.setColorFilter(null);
+            holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_gold));
             holder.tvCategoryBadge.setText("APK МОД");
             holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_gold));
             holder.btnAction.setText(R.string.download_apk);
