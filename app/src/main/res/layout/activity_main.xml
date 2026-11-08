@@ -181,7 +181,7 @@
                     android:id="@+id/ivTabApks"
                     android:layout_width="26dp"
                     android:layout_height="26dp"
-                    android:src="@drawable/ic_apk_package"
+                    android:src="@drawable/ic_apk_custom"
                     app:tint="@color/text_muted" />
 
                 <TextView

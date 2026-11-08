@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
     private void showEmptyState() {
         emptyStateLayout.setVisibility(View.VISIBLE);
         if ("apks".equals(currentCategory)) {
-            ivEmptyIcon.setImageResource(R.drawable.ic_apk_package);
+            ivEmptyIcon.setImageResource(R.drawable.ic_apk_custom);
             ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
             tvEmptyTitle.setText(R.string.empty_apks);
         } else if ("textures".equals(currentCategory)) {
@@ -294,7 +294,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void quickInstall(ModItem item) {
-        Toast.makeText(this, "Подготовка к загрузке " + item.getTitle() + "...", Toast.LENGTH_SHORT).show();
+        Dialog downloadDialog = new Dialog(this);
+        downloadDialog.setContentView(R.layout.dialog_download);
+        if (downloadDialog.getWindow() != null) {
+            downloadDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            downloadDialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.88),
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+        }
+        FontUtils.applyMinecraftFont(downloadDialog.findViewById(android.R.id.content));
+
+        TextView tvTitle = downloadDialog.findViewById(R.id.tvDownloadTitle);
+        TextView tvStats = downloadDialog.findViewById(R.id.tvDownloadStats);
+        ProgressBar progressBar = downloadDialog.findViewById(R.id.pbDownloadProgress);
+        ImageView ivIcon = downloadDialog.findViewById(R.id.ivDownloadIcon);
+
+        if (tvTitle != null) tvTitle.setText(item.getTitle());
+        if (tvStats != null) tvStats.setText("Подключение к серверу...");
+        if (progressBar != null) progressBar.setIndeterminate(true);
+        if (ivIcon != null) {
+            if (item.isApk()) {
+                ivIcon.setImageResource(R.drawable.ic_apk_custom);
+            } else if ("textures".equalsIgnoreCase(item.getCategory())) {
+                ivIcon.setImageResource(R.drawable.ic_palette);
+            } else {
+                ivIcon.setImageResource(R.drawable.ic_extension);
+            }
+        }
+
+        downloadDialog.setCancelable(false);
+        downloadDialog.show();
 
         PocketMarketApi.getInstance().recordDownload(item.getId(), new PocketMarketApi.ApiCallback<String>() {
             @Override
@@ -302,27 +332,47 @@ public class MainActivity extends AppCompatActivity {
                 String ext = item.isApk() ? ".apk" : "." + item.getFileType();
                 String fileName = item.getId() + ext;
 
-                Toast.makeText(MainActivity.this, "Скачивание файла...", Toast.LENGTH_SHORT).show();
-
                 ModInstaller.downloadFile(MainActivity.this, downloadUrl, fileName, new ModInstaller.DownloadListener() {
                     @Override
-                    public void onProgress(int percent) {
+                    public void onProgress(int percent, long downloadedBytes, long totalBytes) {
+                        if (progressBar != null) {
+                            if (percent >= 0) {
+                                progressBar.setIndeterminate(false);
+                                progressBar.setProgress(percent);
+                            } else {
+                                progressBar.setIndeterminate(true);
+                            }
+                        }
+                        if (tvStats != null) {
+                            if (totalBytes > 0 && percent >= 0) {
+                                tvStats.setText(String.format("Скачано: %s / %s (%d%%)",
+                                        ModInstaller.formatBytes(downloadedBytes),
+                                        ModInstaller.formatBytes(totalBytes),
+                                        percent));
+                            } else {
+                                tvStats.setText("Скачано: " + ModInstaller.formatBytes(downloadedBytes));
+                            }
+                        }
                     }
 
                     @Override
                     public void onComplete(File file) {
+                        if (tvStats != null) tvStats.setText("Завершено! Запуск...");
+                        downloadDialog.dismiss();
                         ModInstaller.install(MainActivity.this, item, file);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        Toast.makeText(MainActivity.this, "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        downloadDialog.dismiss();
+                        Toast.makeText(MainActivity.this, "Ошибка скачивания: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
 
             @Override
             public void onError(Exception e) {
+                downloadDialog.dismiss();
                 Toast.makeText(MainActivity.this, "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
 
     private final List<ModItem> items = new ArrayList<>();
     private final OnItemClickListener listener;
+    private int lastAnimatedPosition = -1;
 
     public ModAdapter(OnItemClickListener listener) {
         this.listener = listener;
@@ -36,6 +38,7 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
 
     public void setItems(List<ModItem> newItems) {
         items.clear();
+        lastAnimatedPosition = -1;
         if (newItems != null) {
             items.addAll(newItems);
         }
@@ -55,6 +58,9 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         ModItem item = items.get(position);
         Context context = holder.itemView.getContext();
 
+        // Item entrance animation (slide up + fade in)
+        animateItemEntrance(holder.itemView, position);
+
         holder.tvTitle.setText(item.getTitle());
         holder.tvAuthor.setText(context.getString(R.string.author_prefix) + item.getAuthor());
         holder.tvShortDesc.setText(item.getShortDescription());
@@ -70,9 +76,10 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         holder.btnAction.setBackgroundResource(R.drawable.btn_red);
 
         if (isApk) {
+            // Clean flat APK card without extra border outlines
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_apk);
-            holder.ivIcon.setImageResource(R.drawable.ic_apk_package);
-            holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_gold));
+            holder.ivIcon.setImageResource(R.drawable.ic_apk_custom);
+            holder.ivIcon.setColorFilter(null);
             holder.tvCategoryBadge.setText("APK МОД");
             holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_gold));
             holder.btnAction.setText(R.string.download_apk);
@@ -92,13 +99,35 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
             holder.btnAction.setText(R.string.install);
         }
 
+        // Tactile press animations
         holder.cardContainer.setOnClickListener(v -> {
-            if (listener != null) listener.onItemClick(item);
+            v.animate().scaleX(0.97f).scaleY(0.97f).setDuration(70).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+                if (listener != null) listener.onItemClick(item);
+            }).start();
         });
 
         holder.btnAction.setOnClickListener(v -> {
-            if (listener != null) listener.onInstallClick(item);
+            v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(70).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+                if (listener != null) listener.onInstallClick(item);
+            }).start();
         });
+    }
+
+    private void animateItemEntrance(View view, int position) {
+        if (position > lastAnimatedPosition) {
+            view.setAlpha(0f);
+            view.setTranslationY(40f);
+            view.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(280)
+                    .setStartDelay(Math.min(position * 35, 250))
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+            lastAnimatedPosition = position;
+        }
     }
 
     private String formatDownloads(int count) {

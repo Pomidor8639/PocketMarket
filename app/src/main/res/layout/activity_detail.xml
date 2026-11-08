@@ -74,7 +74,7 @@
                             android:id="@+id/ivDetailIcon"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:background="#1F2533"
+                            android:background="@drawable/bg_icon_rounded"
                             android:padding="10dp"
                             android:src="@drawable/ic_extension"
                             app:tint="@color/mc_red" />

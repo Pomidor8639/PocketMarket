@@ -21,7 +21,7 @@
             android:id="@+id/ivIcon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="#1F2533"
+            android:background="@drawable/bg_icon_rounded"
             android:padding="8dp"
             android:src="@drawable/ic_extension"
             app:tint="@color/mc_red" />

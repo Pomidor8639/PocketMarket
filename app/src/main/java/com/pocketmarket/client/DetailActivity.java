@@ -118,11 +118,11 @@ public class DetailActivity extends AppCompatActivity {
 
         if (isApk) {
             detailHeaderCard.setBackgroundResource(R.drawable.bg_card_apk);
-            ivDetailIcon.setImageResource(R.drawable.ic_apk_package);
-            ivDetailIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
+            ivDetailIcon.setImageResource(R.drawable.ic_apk_custom);
+            ivDetailIcon.setColorFilter(null);
             tvDetailCategoryBadge.setText("APK МОД (.APK)");
             tvDetailCategoryBadge.setTextColor(ContextCompat.getColor(this, R.color.mc_gold));
-            btnDetailInstall.setBackgroundResource(R.drawable.btn_install_gold);
+            btnDetailInstall.setBackgroundResource(R.drawable.btn_red);
             btnDetailInstall.setText(R.string.download_apk);
             tvDetailInstallType.setText("Тип установки: Системный установщик Android (PackageInstaller)");
         } else if (isTexture) {
@@ -158,7 +158,12 @@ public class DetailActivity extends AppCompatActivity {
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
 
-        btnDetailInstall.setOnClickListener(v -> startDownloadAndInstall());
+        btnDetailInstall.setOnClickListener(v -> {
+            v.animate().scaleX(0.96f).scaleY(0.96f).setDuration(70).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+                startDownloadAndInstall();
+            }).start();
+        });
 
         btnRate.setOnClickListener(v -> showRatingDialog());
     }
@@ -183,9 +188,18 @@ public class DetailActivity extends AppCompatActivity {
 
                 ModInstaller.downloadFile(DetailActivity.this, downloadUrl, fileName, new ModInstaller.DownloadListener() {
                     @Override
-                    public void onProgress(int percent) {
-                        detailProgressBar.setProgress(percent);
-                        tvDownloadStatus.setText("Загрузка: " + percent + "%");
+                    public void onProgress(int percent, long downloadedBytes, long totalBytes) {
+                        if (percent >= 0) {
+                            detailProgressBar.setIndeterminate(false);
+                            detailProgressBar.setProgress(percent);
+                            tvDownloadStatus.setText(String.format("Скачано: %s / %s (%d%%)",
+                                    ModInstaller.formatBytes(downloadedBytes),
+                                    ModInstaller.formatBytes(totalBytes),
+                                    percent));
+                        } else {
+                            detailProgressBar.setIndeterminate(true);
+                            tvDownloadStatus.setText("Скачано: " + ModInstaller.formatBytes(downloadedBytes));
+                        }
                     }
 
                     @Override

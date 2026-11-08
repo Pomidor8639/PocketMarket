@@ -3,8 +3,11 @@ package com.pocketmarket.client.installer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -19,19 +22,28 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ModInstaller {
 
     public interface DownloadListener {
-        void onProgress(int percent);
+        void onProgress(int percent, long downloadedBytes, long totalBytes);
         void onComplete(File file);
         void onError(Exception e);
     }
 
     private static final ExecutorService downloadExecutor = Executors.newSingleThreadExecutor();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    public static String formatBytes(long bytes) {
+        if (bytes <= 0) return "0 Б";
+        if (bytes < 1024) return bytes + " Б";
+        if (bytes < 1024 * 1024) return String.format(Locale.US, "%.1f КБ", bytes / 1024.0);
+        return String.format(Locale.US, "%.1f МБ", bytes / (1024.0 * 1024.0));
+    }
 
     public static void downloadFile(Context context, String fileUrl, String targetFileName, DownloadListener listener) {
         downloadExecutor.execute(() -> {
@@ -41,19 +53,40 @@ public class ModInstaller {
             try {
                 URL url = new URL(fileUrl);
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(30000);
+                conn.setInstanceFollowRedirects(true);
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(60000);
+                conn.setRequestProperty("User-Agent", "PocketMarket/1.0.0 (Android)");
                 conn.connect();
 
                 int responseCode = conn.getResponseCode();
-                if (responseCode != HttpURLConnection.HTTP_OK) {
-                    throw new Exception("HTTP error code: " + responseCode);
+                // Follow redirect if needed
+                if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+                    String newUrl = conn.getHeaderField("Location");
+                    if (newUrl != null && !newUrl.isEmpty()) {
+                        conn.disconnect();
+                        url = new URL(newUrl);
+                        conn = (HttpURLConnection) url.openConnection();
+                        conn.setConnectTimeout(15000);
+                        conn.setReadTimeout(60000);
+                        conn.setRequestProperty("User-Agent", "PocketMarket/1.0.0 (Android)");
+                        conn.connect();
+                        responseCode = conn.getResponseCode();
+                    }
                 }
 
-                int fileLength = conn.getContentLength();
-                File downloadDir = context.getExternalFilesDir(null);
+                if (responseCode != HttpURLConnection.HTTP_OK && responseCode != 206) {
+                    throw new Exception("HTTP ошибка сервера: " + responseCode);
+                }
+
+                long fileLength = conn.getContentLengthLong();
+
+                File downloadDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
                 if (downloadDir == null) {
-                    downloadDir = context.getFilesDir();
+                    downloadDir = new File(context.getFilesDir(), "downloads");
+                }
+                if (!downloadDir.exists()) {
+                    downloadDir.mkdirs();
                 }
 
                 File outputFile = new File(downloadDir, targetFileName);
@@ -64,27 +97,28 @@ public class ModInstaller {
                 is = conn.getInputStream();
                 fos = new FileOutputStream(outputFile);
 
-                byte[] buffer = new byte[8192];
+                byte[] buffer = new byte[32768];
                 long total = 0;
                 int count;
-                int lastPercent = 0;
+                long lastUpdateTime = 0;
 
                 while ((count = is.read(buffer)) != -1) {
                     total += count;
                     fos.write(buffer, 0, count);
 
-                    if (fileLength > 0) {
-                        int currentPercent = (int) (total * 100 / fileLength);
-                        if (currentPercent > lastPercent) {
-                            lastPercent = currentPercent;
-                            final int p = currentPercent;
-                            mainHandler.post(() -> listener.onProgress(p));
-                        }
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastUpdateTime > 80 || (fileLength > 0 && total == fileLength)) {
+                        lastUpdateTime = currentTime;
+                        final long curTotal = total;
+                        final long curLength = fileLength;
+                        final int currentPercent = curLength > 0 ? (int) (curTotal * 100 / curLength) : -1;
+                        mainHandler.post(() -> listener.onProgress(currentPercent, curTotal, curLength));
                     }
                 }
 
                 fos.flush();
-                mainHandler.post(() -> listener.onComplete(outputFile));
+                final File finalFile = outputFile;
+                mainHandler.post(() -> listener.onComplete(finalFile));
             } catch (Exception e) {
                 mainHandler.post(() -> listener.onError(e));
             } finally {
@@ -156,6 +190,15 @@ public class ModInstaller {
             installIntent.setDataAndType(fileUri, "application/vnd.android.package-archive");
             installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Grant read permission to all matching activities (crucial for MIUI / HyperOS PackageInstaller!)
+            List<ResolveInfo> resolveInfoList = activity.getPackageManager()
+                    .queryIntentActivities(installIntent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resolveInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                activity.grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
             activity.startActivity(installIntent);
         } catch (Exception e) {
             Toast.makeText(activity, "Ошибка запуска установки APK: " + e.getMessage(), Toast.LENGTH_LONG).show();
