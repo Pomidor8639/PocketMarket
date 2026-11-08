@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#161822"
@@ -29,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:numStars="5"
-        android:progressTint="@color/mc_gold"
+        android:progressTint="@color/mc_red"
         android:rating="5"
         android:stepSize="1" />
 
@@ -54,7 +55,7 @@
         android:background="@drawable/bg_search"
         android:fontFamily="@font/font_minecraft"
         android:gravity="top|start"
-        android:hint="Напишите ваш комментарий о моде..."
+        android:hint="Напишите ваш отзыв..."
         android:padding="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/text_muted"
@@ -78,17 +79,19 @@
             android:textColor="@color/text_body"
             android:textSize="10sp" />
 
+        <!-- Red Submit Button -->
         <Button
             android:id="@+id/btnSubmitRate"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/btn_install_green"
+            android:background="@drawable/btn_red"
             android:fontFamily="@font/font_minecraft"
             android:paddingHorizontal="14dp"
             android:text="ОТПРАВИТЬ"
             android:textColor="@color/white"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            app:backgroundTint="@null" />
     </LinearLayout>
 
 </LinearLayout>

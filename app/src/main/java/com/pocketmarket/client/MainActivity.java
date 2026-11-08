@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,24 +25,25 @@ import com.pocketmarket.client.model.ModItem;
 import com.pocketmarket.client.utils.FontUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText etSearch;
     private ImageView btnRefresh;
-    private TextView tabAll;
     private TextView tabMods;
     private TextView tabTextures;
     private TextView tabApks;
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView rvItems;
     private ProgressBar progressBar;
-    private TextView tvEmptyState;
+    private LinearLayout emptyStateLayout;
+    private ImageView ivEmptyIcon;
+    private TextView tvEmptyTitle;
+    private TextView tvEmptySub;
 
     private ModAdapter modAdapter;
-    private String currentCategory = "all";
+    private String currentCategory = "mods";
     private String currentSearch = "";
 
     @Override
@@ -57,23 +59,25 @@ public class MainActivity extends AppCompatActivity {
         setupSearch();
         setupListeners();
 
-        loadItems(true);
+        selectTab("mods");
     }
 
     private void initViews() {
         etSearch = findViewById(R.id.etSearch);
         btnRefresh = findViewById(R.id.btnRefresh);
-        tabAll = findViewById(R.id.tabAll);
         tabMods = findViewById(R.id.tabMods);
         tabTextures = findViewById(R.id.tabTextures);
         tabApks = findViewById(R.id.tabApks);
         swipeRefresh = findViewById(R.id.swipeRefresh);
         rvItems = findViewById(R.id.rvItems);
         progressBar = findViewById(R.id.progressBar);
-        tvEmptyState = findViewById(R.id.tvEmptyState);
+        emptyStateLayout = findViewById(R.id.emptyStateLayout);
+        ivEmptyIcon = findViewById(R.id.ivEmptyIcon);
+        tvEmptyTitle = findViewById(R.id.tvEmptyTitle);
+        tvEmptySub = findViewById(R.id.tvEmptySub);
 
         swipeRefresh.setColorSchemeColors(
-                ContextCompat.getColor(this, R.color.mc_green),
+                ContextCompat.getColor(this, R.color.mc_red),
                 ContextCompat.getColor(this, R.color.mc_gold),
                 ContextCompat.getColor(this, R.color.mc_aqua)
         );
@@ -101,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupTabs() {
-        tabAll.setOnClickListener(v -> selectTab("all"));
         tabMods.setOnClickListener(v -> selectTab("mods"));
         tabTextures.setOnClickListener(v -> selectTab("textures"));
         tabApks.setOnClickListener(v -> selectTab("apks"));
@@ -110,18 +113,17 @@ public class MainActivity extends AppCompatActivity {
     private void selectTab(String category) {
         currentCategory = category;
 
-        updateTabStyle(tabAll, "all".equals(category), R.color.mc_green);
-        updateTabStyle(tabMods, "mods".equals(category), R.color.mc_green);
-        updateTabStyle(tabTextures, "textures".equals(category), R.color.mc_aqua);
-        updateTabStyle(tabApks, "apks".equals(category), R.color.mc_gold);
+        updateTabStyle(tabMods, "mods".equals(category));
+        updateTabStyle(tabTextures, "textures".equals(category));
+        updateTabStyle(tabApks, "apks".equals(category));
 
         loadItems(true);
     }
 
-    private void updateTabStyle(TextView tab, boolean isSelected, int activeColorRes) {
+    private void updateTabStyle(TextView tab, boolean isSelected) {
         if (isSelected) {
-            tab.setBackgroundResource(R.drawable.bg_tab_selected);
-            tab.setTextColor(ContextCompat.getColor(this, activeColorRes));
+            tab.setBackgroundResource(R.drawable.bg_tab_red_selected);
+            tab.setTextColor(ContextCompat.getColor(this, R.color.mc_red));
         } else {
             tab.setBackgroundResource(R.drawable.bg_tab_unselected);
             tab.setTextColor(ContextCompat.getColor(this, R.color.text_body));
@@ -162,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
 
-                if (items.isEmpty()) {
-                    tvEmptyState.setVisibility(View.VISIBLE);
+                if (items == null || items.isEmpty()) {
+                    showEmptyState();
                 } else {
-                    tvEmptyState.setVisibility(View.GONE);
+                    emptyStateLayout.setVisibility(View.GONE);
                 }
 
                 modAdapter.setItems(items);
@@ -175,9 +177,28 @@ public class MainActivity extends AppCompatActivity {
             public void onError(Exception e) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
-                Toast.makeText(MainActivity.this, "Ошибка соединения с сервером PocketMarket", Toast.LENGTH_SHORT).show();
+                showEmptyState();
+                Toast.makeText(MainActivity.this, "Сервер онлайн. Каталог пуст или обновляется.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showEmptyState() {
+        emptyStateLayout.setVisibility(View.VISIBLE);
+        if ("apks".equals(currentCategory)) {
+            ivEmptyIcon.setImageResource(R.drawable.ic_android);
+            ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
+            tvEmptyTitle.setText(R.string.empty_apks);
+        } else if ("textures".equals(currentCategory)) {
+            ivEmptyIcon.setImageResource(R.drawable.ic_palette);
+            ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_aqua));
+            tvEmptyTitle.setText(R.string.empty_textures);
+        } else {
+            ivEmptyIcon.setImageResource(R.drawable.ic_extension);
+            ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_red));
+            tvEmptyTitle.setText(R.string.empty_mods);
+        }
+        tvEmptySub.setText(R.string.empty_sub);
     }
 
     private void quickInstall(ModItem item) {

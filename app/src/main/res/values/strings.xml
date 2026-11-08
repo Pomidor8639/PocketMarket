@@ -2,11 +2,10 @@
 <resources>
     <string name="app_name">PocketMarket</string>
     <string name="subtitle_mc">МАГАЗИН МОДОВ И APK ДЛЯ MINECRAFT</string>
-    <string name="category_all">Все</string>
-    <string name="category_mods">Моды</string>
-    <string name="category_textures">Текстурпаки</string>
-    <string name="category_apks">АПК Моды</string>
-    <string name="search_hint">Поиск мода, текстуры или APK...</string>
+    <string name="category_mods">МОДЫ</string>
+    <string name="category_textures">ТЕКСТУРЫ</string>
+    <string name="category_apks">АПК МОДЫ</string>
+    <string name="search_hint">Поиск в текущей вкладке...</string>
     <string name="install">УСТАНОВИТЬ</string>
     <string name="download_apk">СКАЧАТЬ APK</string>
     <string name="description_title">ОПИСАНИЕ</string>
@@ -22,4 +21,8 @@
     <string name="installing">Импорт в Minecraft...</string>
     <string name="apk_installing">Запуск установки APK...</string>
     <string name="permission_install_unknown">Пожалуйста, включите разрешение на установку APK в настройках безопасности.</string>
+    <string name="empty_mods">В категории Моды пока нет файлов</string>
+    <string name="empty_textures">В категории Текстуры пока нет файлов</string>
+    <string name="empty_apks">В категории АПК Моды пока нет файлов</string>
+    <string name="empty_sub">Добавьте реальные файлы через веб-панель</string>
 </resources>

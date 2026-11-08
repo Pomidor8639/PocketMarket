@@ -28,7 +28,7 @@
                 android:background="#1C212E"
                 android:padding="6dp"
                 android:src="@drawable/ic_apps"
-                app:tint="@color/mc_green" />
+                app:tint="@color/mc_red" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -53,7 +53,7 @@
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/font_minecraft"
                     android:text="@string/subtitle_mc"
-                    android:textColor="@color/mc_gold"
+                    android:textColor="@color/mc_red"
                     android:textSize="9sp" />
             </LinearLayout>
 
@@ -96,73 +96,57 @@
                 android:maxLines="1"
                 android:textColor="@color/white"
                 android:textColorHint="@color/text_muted"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Category Filter Tabs -->
-        <HorizontalScrollView
+        <!-- Separate Dedicated Category Tabs: Mods, Textures, APK Mods -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:scrollbars="none">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tabMods"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_red_selected"
+                android:fontFamily="@font/font_minecraft"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/category_mods"
+                android:textColor="@color/mc_red"
+                android:textSize="11sp" />
 
-                <TextView
-                    android:id="@+id/tabAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_tab_selected"
-                    android:fontFamily="@font/font_minecraft"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/category_all"
-                    android:textColor="@color/mc_green"
-                    android:textSize="11sp" />
+            <TextView
+                android:id="@+id/tabTextures"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_unselected"
+                android:fontFamily="@font/font_minecraft"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/category_textures"
+                android:textColor="@color/text_body"
+                android:textSize="11sp" />
 
-                <TextView
-                    android:id="@+id/tabMods"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_tab_unselected"
-                    android:fontFamily="@font/font_minecraft"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/category_mods"
-                    android:textColor="@color/text_body"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:id="@+id/tabTextures"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_tab_unselected"
-                    android:fontFamily="@font/font_minecraft"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/category_textures"
-                    android:textColor="@color/text_body"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:id="@+id/tabApks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_tab_unselected"
-                    android:fontFamily="@font/font_minecraft"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/category_apks"
-                    android:textColor="@color/text_body"
-                    android:textSize="11sp" />
-            </LinearLayout>
-        </HorizontalScrollView>
+            <TextView
+                android:id="@+id/tabApks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_unselected"
+                android:fontFamily="@font/font_minecraft"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/category_apks"
+                android:textColor="@color/text_body"
+                android:textSize="11sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Main Content List with Pull-to-refresh -->
@@ -187,26 +171,53 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminateTint="@color/mc_green"
+        android:indeterminateTint="@color/mc_red"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
-    <!-- Empty State -->
-    <TextView
-        android:id="@+id/tvEmptyState"
-        android:layout_width="wrap_content"
+    <!-- Empty State Container -->
+    <LinearLayout
+        android:id="@+id/emptyStateLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/font_minecraft"
-        android:text="Моды не найдены"
-        android:textColor="@color/text_muted"
-        android:textSize="13sp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <ImageView
+            android:id="@+id/ivEmptyIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_extension"
+            app:tint="@color/text_muted" />
+
+        <TextView
+            android:id="@+id/tvEmptyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/font_minecraft"
+            android:gravity="center"
+            android:text="@string/empty_mods"
+            android:textColor="@color/text_title"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvEmptySub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/font_minecraft"
+            android:gravity="center"
+            android:text="@string/empty_sub"
+            android:textColor="@color/text_muted"
+            android:textSize="9sp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.pocketmarket.client.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,13 +66,15 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         boolean isApk = item.isApk();
         boolean isTexture = "textures".equalsIgnoreCase(item.getCategory());
 
+        // Always red button style as requested
+        holder.btnAction.setBackgroundResource(R.drawable.btn_red);
+
         if (isApk) {
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_apk);
             holder.ivIcon.setImageResource(R.drawable.ic_android);
             holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_gold));
             holder.tvCategoryBadge.setText("АПК МОД");
             holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_gold));
-            holder.btnAction.setBackgroundResource(R.drawable.btn_install_gold);
             holder.btnAction.setText(R.string.download_apk);
         } else if (isTexture) {
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_black);
@@ -81,15 +82,13 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
             holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_aqua));
             holder.tvCategoryBadge.setText("ТЕКСТУРЫ");
             holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_aqua));
-            holder.btnAction.setBackgroundResource(R.drawable.btn_install_green);
             holder.btnAction.setText(R.string.install);
         } else {
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_black);
             holder.ivIcon.setImageResource(R.drawable.ic_extension);
-            holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_green));
+            holder.ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.mc_red));
             holder.tvCategoryBadge.setText("МОДЫ");
-            holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_green));
-            holder.btnAction.setBackgroundResource(R.drawable.btn_install_green);
+            holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_red));
             holder.btnAction.setText(R.string.install);
         }
 

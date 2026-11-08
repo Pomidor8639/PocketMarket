@@ -11,13 +11,19 @@
     <color name="card_stroke">#262E40</color>
     <color name="card_stroke_apk">#543B14</color>
     
+    <!-- Red Button & Accent Theme -->
+    <color name="btn_red_bg">#C62828</color>
+    <color name="btn_red_pressed">#8E0000</color>
+    <color name="btn_red_stroke">#FF5555</color>
+    <color name="tab_red_selected">#2B1111</color>
+    <color name="mc_red">#FF5555</color>
+    
     <!-- Minecraft Accents -->
     <color name="mc_green">#55FF55</color>
     <color name="mc_green_dark">#247324</color>
     <color name="mc_gold">#FFAA00</color>
     <color name="mc_gold_dark">#7B5000</color>
     <color name="mc_aqua">#55FFFF</color>
-    <color name="mc_red">#FF5555</color>
     <color name="mc_gray">#858B9C</color>
     
     <!-- Text Colors -->

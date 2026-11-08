@@ -24,7 +24,7 @@
             android:background="#1F2533"
             android:padding="8dp"
             android:src="@drawable/ic_extension"
-            app:tint="@color/mc_green" />
+            app:tint="@color/mc_red" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -41,7 +41,7 @@
                 android:textColor="@color/text_title"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                tools:text="FurniCraft 3D Ultimate" />
+                tools:text="Custom Mod" />
 
             <TextView
                 android:id="@+id/tvAuthor"
@@ -51,7 +51,7 @@
                 android:fontFamily="@font/font_minecraft"
                 android:textColor="@color/text_muted"
                 android:textSize="10sp"
-                tools:text="Автор: RobertGamer" />
+                tools:text="Автор: Steve" />
         </LinearLayout>
 
         <TextView
@@ -62,7 +62,7 @@
             android:fontFamily="@font/font_minecraft"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
-            android:textColor="@color/mc_green"
+            android:textColor="@color/mc_red"
             android:textSize="9sp"
             tools:text="МОДЫ" />
     </LinearLayout>
@@ -79,7 +79,7 @@
         android:maxLines="2"
         android:textColor="@color/text_body"
         android:textSize="11sp"
-        tools:text="Более 500 видов интерактивной 3D мебели для декора вашего дома." />
+        tools:text="Описание мода..." />
 
     <!-- Badges Row: Rating, Downloads, Size, MC Version -->
     <LinearLayout
@@ -99,7 +99,7 @@
                 android:layout_width="14dp"
                 android:layout_height="14dp"
                 android:src="@drawable/ic_star"
-                app:tint="@color/mc_green" />
+                app:tint="@color/mc_red" />
 
             <TextView
                 android:id="@+id/tvRating"
@@ -109,7 +109,7 @@
                 android:fontFamily="@font/font_minecraft"
                 android:textColor="@color/text_title"
                 android:textSize="10sp"
-                tools:text="4.9" />
+                tools:text="5.0" />
         </LinearLayout>
 
         <LinearLayout
@@ -133,7 +133,7 @@
                 android:fontFamily="@font/font_minecraft"
                 android:textColor="@color/text_body"
                 android:textSize="10sp"
-                tools:text="48.2k" />
+                tools:text="120" />
         </LinearLayout>
 
         <TextView
@@ -144,7 +144,7 @@
             android:fontFamily="@font/font_minecraft"
             android:textColor="@color/mc_aqua"
             android:textSize="10sp"
-            tools:text="14.8 MB" />
+            tools:text="12 MB" />
 
         <View
             android:layout_width="0dp"
@@ -158,16 +158,16 @@
             android:fontFamily="@font/font_minecraft"
             android:textColor="@color/text_muted"
             android:textSize="9sp"
-            tools:text="MC 1.20 - 1.21" />
+            tools:text="MC 1.20+" />
     </LinearLayout>
 
-    <!-- Bottom Action Button -->
+    <!-- Red Action Button -->
     <Button
         android:id="@+id/btnAction"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/btn_install_green"
+        android:background="@drawable/btn_red"
         android:fontFamily="@font/font_minecraft"
         android:insetTop="0dp"
         android:insetBottom="0dp"
