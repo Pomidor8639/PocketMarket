@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PocketMarket</string>
+    <string name="subtitle_mc">МАГАЗИН МОДОВ И APK ДЛЯ MINECRAFT</string>
+    <string name="category_all">Все</string>
+    <string name="category_mods">Моды</string>
+    <string name="category_textures">Текстурпаки</string>
+    <string name="category_apks">АПК Моды</string>
+    <string name="search_hint">Поиск мода, текстуры или APK...</string>
+    <string name="install">УСТАНОВИТЬ</string>
+    <string name="download_apk">СКАЧАТЬ APK</string>
+    <string name="description_title">ОПИСАНИЕ</string>
+    <string name="changelog_title">ЧТО НОВОГО</string>
+    <string name="reviews_title">ОТЗЫВЫ И ОЦЕНКИ</string>
+    <string name="rate_button">ОЦЕНИТЬ</string>
+    <string name="author_prefix">Автор: </string>
+    <string name="version_prefix">Версия: </string>
+    <string name="target_mc_prefix">Minecraft: </string>
+    <string name="size_prefix">Размер: </string>
+    <string name="downloads_count">%1$s скачиваний</string>
+    <string name="downloading">Загрузка файла...</string>
+    <string name="installing">Импорт в Minecraft...</string>
+    <string name="apk_installing">Запуск установки APK...</string>
+    <string name="permission_install_unknown">Пожалуйста, включите разрешение на установку APK в настройках безопасности.</string>
+</resources>

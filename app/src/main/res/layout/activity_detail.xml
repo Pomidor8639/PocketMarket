@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Detail Toolbar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#12141C"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="#1C212E"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tvToolbarTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/font_minecraft"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                tools:text="FurniCraft 3D Ultimate" />
+        </LinearLayout>
+
+        <!-- Scrollable Content -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Header Card -->
+                <LinearLayout
+                    android:id="@+id/detailHeaderCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_black"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ivDetailIcon"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:background="#1F2533"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_extension"
+                            app:tint="@color/mc_green" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvDetailTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:text="FurniCraft 3D Ultimate" />
+
+                            <TextView
+                                android:id="@+id/tvDetailAuthor"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="@font/font_minecraft"
+                                android:textColor="@color/text_muted"
+                                android:textSize="11sp"
+                                tools:text="Автор: RobertGamer" />
+
+                            <TextView
+                                android:id="@+id/tvDetailCategoryBadge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:background="@drawable/badge_category"
+                                android:fontFamily="@font/font_minecraft"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="4dp"
+                                android:textColor="@color/mc_green"
+                                android:textSize="9sp"
+                                tools:text="МОДЫ (.MCADDON)" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Specs Bar -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="#10121A"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvDetailRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:textColor="@color/mc_green"
+                                android:textSize="13sp"
+                                tools:text="4.9 ★" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:text="Рейтинг"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="24dp"
+                            android:background="#242B3D" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvDetailDownloads"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:textColor="@color/mc_gold"
+                                android:textSize="13sp"
+                                tools:text="48.2k" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:text="Загрузок"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="24dp"
+                            android:background="#242B3D" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvDetailSize"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:textColor="@color/mc_aqua"
+                                android:textSize="13sp"
+                                tools:text="14.8 MB" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:text="Размер"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Big Install Button -->
+                    <Button
+                        android:id="@+id/btnDetailInstall"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/btn_install_green"
+                        android:fontFamily="@font/font_minecraft"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/install"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:backgroundTint="@null" />
+
+                    <!-- Download Progress Bar -->
+                    <ProgressBar
+                        android:id="@+id/detailProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="8dp"
+                        android:indeterminate="true"
+                        android:progressTint="@color/mc_green"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvDownloadStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/font_minecraft"
+                        android:textColor="@color/mc_gold"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:text="Загрузка... 45%" />
+                </LinearLayout>
+
+                <!-- Compatibility Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_card_black"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font_minecraft"
+                        android:text="СОВМЕСТИМОСТЬ"
+                        android:textColor="@color/mc_aqua"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tvDetailMcVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/font_minecraft"
+                        android:textColor="@color/text_body"
+                        android:textSize="12sp"
+                        tools:text="Minecraft Bedrock 1.20 - 1.21+" />
+
+                    <TextView
+                        android:id="@+id/tvDetailInstallType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/font_minecraft"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp"
+                        tools:text="Тип установки: Авто-импорт через Minecraft" />
+                </LinearLayout>
+
+                <!-- Description Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_card_black"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font_minecraft"
+                        android:text="@string/description_title"
+                        android:textColor="@color/mc_green"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tvDetailDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/font_minecraft"
+                        android:lineSpacingExtra="3dp"
+                        android:textColor="@color/text_body"
+                        android:textSize="12sp"
+                        tools:text="FurniCraft 3D Ultimate добавляет в игру огромный ассортимент мебели..." />
+                </LinearLayout>
+
+                <!-- Changelog Card -->
+                <LinearLayout
+                    android:id="@+id/changelogCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_card_black"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font_minecraft"
+                        android:text="@string/changelog_title"
+                        android:textColor="@color/mc_gold"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tvDetailChangelog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/font_minecraft"
+                        android:lineSpacingExtra="2dp"
+                        android:textColor="@color/text_body"
+                        android:textSize="11sp"
+                        tools:text="Добавлены современные неоновые лампы..." />
+                </LinearLayout>
+
+                <!-- Reviews & Rating Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/bg_card_black"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/font_minecraft"
+                            android:text="@string/reviews_title"
+                            android:textColor="@color/mc_aqua"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:background="@drawable/btn_install_gold"
+                            android:fontFamily="@font/font_minecraft"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:text="@string/rate_button"
+                            android:textColor="@color/white"
+                            android:textSize="9sp"
+                            app:backgroundTint="@null" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvReviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/item_review" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

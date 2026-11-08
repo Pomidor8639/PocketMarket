@@ -1,0 +1,29 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Environment and secrets - NEVER COMMIT
+.env
+*.env
+.env.*
+*.secret
+
+# Documentation and notes - Local only
+MEMORY.md
+memory.md
+
+# Backend source - Server only
+backend/
+PocketMarket-Backend/

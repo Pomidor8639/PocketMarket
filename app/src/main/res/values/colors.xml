@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- PocketMarket Black Theme -->
+    <color name="bg_black">#0C0D11</color>
+    <color name="bg_surface">#131620</color>
+    <color name="bg_card">#171B26</color>
+    <color name="bg_card_apk">#211A13</color>
+    <color name="card_stroke">#262E40</color>
+    <color name="card_stroke_apk">#543B14</color>
+    
+    <!-- Minecraft Accents -->
+    <color name="mc_green">#55FF55</color>
+    <color name="mc_green_dark">#247324</color>
+    <color name="mc_gold">#FFAA00</color>
+    <color name="mc_gold_dark">#7B5000</color>
+    <color name="mc_aqua">#55FFFF</color>
+    <color name="mc_red">#FF5555</color>
+    <color name="mc_gray">#858B9C</color>
+    
+    <!-- Text Colors -->
+    <color name="text_title">#FFFFFF</color>
+    <color name="text_body">#C6CBD8</color>
+    <color name="text_muted">#7A8194</color>
+</resources>
