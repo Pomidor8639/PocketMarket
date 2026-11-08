@@ -43,6 +43,37 @@ public class PocketMarketApi {
         void onError(Exception e);
     }
 
+    public static class UpdateInfo {
+        public int versionCode;
+        public String versionName;
+        public String downloadUrl;
+        public String fileSize;
+        public String changelog;
+        public boolean forceUpdate;
+    }
+
+    public void checkForUpdates(ApiCallback<UpdateInfo> callback) {
+        executor.execute(() -> {
+            try {
+                String url = getBaseUrl() + "/api/app/version";
+                String response = executeGet(url);
+                JSONObject json = new JSONObject(response);
+
+                UpdateInfo info = new UpdateInfo();
+                info.versionCode = json.optInt("versionCode", 1);
+                info.versionName = json.optString("versionName", "1.0.0");
+                info.downloadUrl = json.optString("downloadUrl", getBaseUrl() + "/files/PocketMarket.apk");
+                info.fileSize = json.optString("fileSize", "~6.2 MB");
+                info.changelog = json.optString("changelog", "Обновление приложения");
+                info.forceUpdate = json.optBoolean("forceUpdate", false);
+
+                mainHandler.post(() -> callback.onSuccess(info));
+            } catch (Exception e) {
+                mainHandler.post(() -> callback.onError(e));
+            }
+        });
+    }
+
     private PocketMarketApi() {
         this.executor = Executors.newFixedThreadPool(4);
         this.mainHandler = new Handler(Looper.getMainLooper());

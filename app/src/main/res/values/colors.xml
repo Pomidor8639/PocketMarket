@@ -3,31 +3,31 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- PocketMarket Black Theme -->
-    <color name="bg_black">#0C0D11</color>
-    <color name="bg_surface">#131620</color>
-    <color name="bg_card">#171B26</color>
-    <color name="bg_card_apk">#211A13</color>
-    <color name="card_stroke">#262E40</color>
-    <color name="card_stroke_apk">#543B14</color>
+    <!-- PocketMarket New Obsidian Black Theme -->
+    <color name="bg_black">#070709</color>
+    <color name="bg_surface">#0F1015</color>
+    <color name="bg_card">#15161E</color>
+    <color name="bg_card_apk">#15161E</color>
+    <color name="card_stroke">#212330</color>
+    <color name="card_stroke_apk">#212330</color>
     
     <!-- Red Button & Accent Theme -->
-    <color name="btn_red_bg">#C62828</color>
-    <color name="btn_red_pressed">#8E0000</color>
-    <color name="btn_red_stroke">#FF5555</color>
-    <color name="tab_red_selected">#2B1111</color>
-    <color name="mc_red">#FF5555</color>
+    <color name="btn_red_bg">#D32F2F</color>
+    <color name="btn_red_pressed">#9A0007</color>
+    <color name="btn_red_stroke">#FF6659</color>
+    <color name="tab_red_selected">#241010</color>
+    <color name="mc_red">#FF4D4D</color>
     
     <!-- Minecraft Accents -->
     <color name="mc_green">#55FF55</color>
     <color name="mc_green_dark">#247324</color>
     <color name="mc_gold">#FFAA00</color>
     <color name="mc_gold_dark">#7B5000</color>
-    <color name="mc_aqua">#55FFFF</color>
-    <color name="mc_gray">#858B9C</color>
+    <color name="mc_aqua">#00E5FF</color>
+    <color name="mc_gray">#8890A6</color>
     
     <!-- Text Colors -->
     <color name="text_title">#FFFFFF</color>
-    <color name="text_body">#C6CBD8</color>
-    <color name="text_muted">#7A8194</color>
+    <color name="text_body">#D1D5E0</color>
+    <color name="text_muted">#8890A6</color>
 </resources>

@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setupListeners();
 
         selectTab("apks");
+        checkAppUpdates();
     }
 
     private void initViews() {
@@ -227,6 +228,18 @@ public class MainActivity extends AppCompatActivity {
 
         FontUtils.applyMinecraftFont(dialog.findViewById(android.R.id.content));
 
+        View btnGithub = dialog.findViewById(R.id.btnAboutGithub);
+        if (btnGithub != null) {
+            btnGithub.setOnClickListener(v -> {
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/Pomidor8639/PocketMarket"));
+                    startActivity(browserIntent);
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Не удалось открыть браузер", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         View btnClose = dialog.findViewById(R.id.btnAboutClose);
         if (btnClose != null) {
             btnClose.setOnClickListener(v -> dialog.dismiss());
@@ -276,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
     private void showEmptyState() {
         emptyStateLayout.setVisibility(View.VISIBLE);
         if ("apks".equals(currentCategory)) {
-            ivEmptyIcon.setImageResource(R.drawable.ic_apk_custom);
+            ivEmptyIcon.setImageResource(R.drawable.apk_install_48);
             ivEmptyIcon.setColorFilter(ContextCompat.getColor(this, R.color.mc_gold));
             tvEmptyTitle.setText(R.string.empty_apks);
         } else if ("textures".equals(currentCategory)) {
@@ -315,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         if (progressBar != null) progressBar.setIndeterminate(true);
         if (ivIcon != null) {
             if (item.isApk()) {
-                ivIcon.setImageResource(R.drawable.ic_apk_custom);
+                ivIcon.setImageResource(R.drawable.apk_install_48);
             } else if ("textures".equalsIgnoreCase(item.getCategory())) {
                 ivIcon.setImageResource(R.drawable.ic_palette);
             } else {
@@ -374,6 +387,125 @@ public class MainActivity extends AppCompatActivity {
             public void onError(Exception e) {
                 downloadDialog.dismiss();
                 Toast.makeText(MainActivity.this, "Ошибка загрузки: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void checkAppUpdates() {
+        PocketMarketApi.getInstance().checkForUpdates(new PocketMarketApi.ApiCallback<PocketMarketApi.UpdateInfo>() {
+            @Override
+            public void onSuccess(PocketMarketApi.UpdateInfo info) {
+                int currentCode = 1;
+                try {
+                    currentCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+                } catch (Exception ignored) {
+                }
+
+                if (info != null && info.versionCode > currentCode) {
+                    showUpdateDialog(info);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Ignore silent update errors
+            }
+        });
+    }
+
+    private void showUpdateDialog(PocketMarketApi.UpdateInfo info) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_update);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.9),
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+        }
+        FontUtils.applyMinecraftFont(dialog.findViewById(android.R.id.content));
+
+        TextView tvVer = dialog.findViewById(R.id.tvUpdateVersion);
+        TextView tvChangelog = dialog.findViewById(R.id.tvUpdateChangelog);
+        View btnLater = dialog.findViewById(R.id.btnUpdateLater);
+        View btnUpdate = dialog.findViewById(R.id.btnUpdateNow);
+
+        if (tvVer != null) tvVer.setText("PocketMarket v" + info.versionName + " (" + info.fileSize + ")");
+        if (tvChangelog != null) tvChangelog.setText(info.changelog);
+
+        if (btnLater != null) {
+            btnLater.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnUpdate != null) {
+            btnUpdate.setOnClickListener(v -> {
+                dialog.dismiss();
+                startAppSelfUpdate(info.downloadUrl);
+            });
+        }
+
+        dialog.show();
+    }
+
+    private void startAppSelfUpdate(String downloadUrl) {
+        Dialog downloadDialog = new Dialog(this);
+        downloadDialog.setContentView(R.layout.dialog_download);
+        if (downloadDialog.getWindow() != null) {
+            downloadDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            downloadDialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.88),
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+        }
+        FontUtils.applyMinecraftFont(downloadDialog.findViewById(android.R.id.content));
+
+        TextView tvTitle = downloadDialog.findViewById(R.id.tvDownloadTitle);
+        TextView tvStats = downloadDialog.findViewById(R.id.tvDownloadStats);
+        ProgressBar progressBar = downloadDialog.findViewById(R.id.pbDownloadProgress);
+        ImageView ivIcon = downloadDialog.findViewById(R.id.ivDownloadIcon);
+
+        if (tvTitle != null) tvTitle.setText("Обновление PocketMarket...");
+        if (tvStats != null) tvStats.setText("Загрузка обновления...");
+        if (ivIcon != null) ivIcon.setImageResource(R.drawable.apk_install_48);
+
+        downloadDialog.setCancelable(false);
+        downloadDialog.show();
+
+        ModInstaller.downloadFile(this, downloadUrl, "PocketMarket_Update.apk", new ModInstaller.DownloadListener() {
+            @Override
+            public void onProgress(int percent, long downloadedBytes, long totalBytes) {
+                if (progressBar != null) {
+                    if (percent >= 0) {
+                        progressBar.setIndeterminate(false);
+                        progressBar.setProgress(percent);
+                    } else {
+                        progressBar.setIndeterminate(true);
+                    }
+                }
+                if (tvStats != null) {
+                    if (totalBytes > 0 && percent >= 0) {
+                        tvStats.setText(String.format("Скачано: %s / %s (%d%%)",
+                                ModInstaller.formatBytes(downloadedBytes),
+                                ModInstaller.formatBytes(totalBytes),
+                                percent));
+                    } else {
+                        tvStats.setText("Скачано: " + ModInstaller.formatBytes(downloadedBytes));
+                    }
+                }
+            }
+
+            @Override
+            public void onComplete(File file) {
+                downloadDialog.dismiss();
+                ModItem appItem = new ModItem();
+                appItem.setCategory("apks");
+                ModInstaller.install(MainActivity.this, appItem, file);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                downloadDialog.dismiss();
+                Toast.makeText(MainActivity.this, "Ошибка загрузки обновления: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

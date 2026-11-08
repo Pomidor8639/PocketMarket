@@ -64,7 +64,6 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         holder.tvTitle.setText(item.getTitle());
         holder.tvAuthor.setText(context.getString(R.string.author_prefix) + item.getAuthor());
         holder.tvShortDesc.setText(item.getShortDescription());
-        holder.tvRating.setText(String.format("%.1f", item.getRating()));
         holder.tvDownloads.setText(formatDownloads(item.getDownloads()));
         holder.tvFileSize.setText(item.getFileSize());
         holder.tvMcVersion.setText("MC " + item.getMcVersion());
@@ -78,7 +77,7 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         if (isApk) {
             // Clean flat APK card without extra border outlines
             holder.cardContainer.setBackgroundResource(R.drawable.bg_card_apk);
-            holder.ivIcon.setImageResource(R.drawable.ic_apk_custom);
+            holder.ivIcon.setImageResource(R.drawable.apk_install_48);
             holder.ivIcon.setColorFilter(null);
             holder.tvCategoryBadge.setText("APK МОД");
             holder.tvCategoryBadge.setTextColor(ContextCompat.getColor(context, R.color.mc_gold));
@@ -149,7 +148,6 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
         TextView tvAuthor;
         TextView tvCategoryBadge;
         TextView tvShortDesc;
-        TextView tvRating;
         TextView tvDownloads;
         TextView tvFileSize;
         TextView tvMcVersion;
@@ -163,7 +161,6 @@ public class ModAdapter extends RecyclerView.Adapter<ModAdapter.ModViewHolder> {
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
             tvCategoryBadge = itemView.findViewById(R.id.tvCategoryBadge);
             tvShortDesc = itemView.findViewById(R.id.tvShortDesc);
-            tvRating = itemView.findViewById(R.id.tvRating);
             tvDownloads = itemView.findViewById(R.id.tvDownloads);
             tvFileSize = itemView.findViewById(R.id.tvFileSize);
             tvMcVersion = itemView.findViewById(R.id.tvMcVersion);

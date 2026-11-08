@@ -11,21 +11,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Detail Toolbar -->
+        <!-- Top App Bar with Back Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#12141C"
+            android:background="@color/bg_surface"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="12dp">
+            android:paddingHorizontal="14dp">
 
             <ImageView
                 android:id="@+id/btnBack"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:background="#1C212E"
-                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="6dp"
                 android:src="@drawable/ic_arrow_back"
                 app:tint="@color/white" />
 
@@ -33,13 +35,13 @@
                 android:id="@+id/tvToolbarTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="14dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/font_minecraft"
                 android:maxLines="1"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 tools:text="Mod Name" />
         </LinearLayout>
 
@@ -62,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_card_black"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -72,17 +74,16 @@
 
                         <ImageView
                             android:id="@+id/ivDetailIcon"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
                             android:background="@drawable/bg_icon_rounded"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_extension"
-                            app:tint="@color/mc_red" />
+                            android:padding="8dp"
+                            android:src="@drawable/apk_install_48" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
+                            android:layout_marginStart="16dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -92,7 +93,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/font_minecraft"
                                 android:textColor="@color/white"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold"
                                 tools:text="Mod Name" />
 
@@ -103,63 +104,33 @@
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="@font/font_minecraft"
                                 android:textColor="@color/text_muted"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 tools:text="Автор: Steve" />
 
                             <TextView
                                 android:id="@+id/tvDetailCategoryBadge"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
+                                android:layout_marginTop="8dp"
                                 android:background="@drawable/badge_category"
                                 android:fontFamily="@font/font_minecraft"
-                                android:paddingHorizontal="8dp"
-                                android:paddingVertical="4dp"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="5dp"
                                 android:textColor="@color/mc_red"
-                                android:textSize="9sp"
+                                android:textSize="10sp"
                                 tools:text="МОДЫ" />
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- Specs Bar -->
+                    <!-- Specs Bar (Downloads, Size, Target MC Version) -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:background="#10121A"
+                        android:layout_marginTop="18dp"
+                        android:background="#0A0B0F"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="10dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvDetailRating"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/font_minecraft"
-                                android:textColor="@color/mc_red"
-                                android:textSize="13sp"
-                                tools:text="5.0 ★" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/font_minecraft"
-                                android:text="Рейтинг"
-                                android:textColor="@color/text_muted"
-                                android:textSize="9sp" />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="24dp"
-                            android:background="#242B3D" />
+                        android:padding="12dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -174,22 +145,23 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/font_minecraft"
                                 android:textColor="@color/mc_gold"
-                                android:textSize="13sp"
+                                android:textSize="14sp"
                                 tools:text="120" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
                                 android:fontFamily="@font/font_minecraft"
                                 android:text="Загрузок"
                                 android:textColor="@color/text_muted"
-                                android:textSize="9sp" />
+                                android:textSize="10sp" />
                         </LinearLayout>
 
                         <View
                             android:layout_width="1dp"
                             android:layout_height="24dp"
-                            android:background="#242B3D" />
+                            android:background="#1E202B" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -204,16 +176,48 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/font_minecraft"
                                 android:textColor="@color/mc_aqua"
-                                android:textSize="13sp"
+                                android:textSize="14sp"
                                 tools:text="12 MB" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
                                 android:fontFamily="@font/font_minecraft"
                                 android:text="Размер"
                                 android:textColor="@color/text_muted"
-                                android:textSize="9sp" />
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="24dp"
+                            android:background="#1E202B" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvDetailMcVersionSpec"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/font_minecraft"
+                                android:textColor="@color/mc_green"
+                                android:textSize="14sp"
+                                tools:text="1.20+" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:fontFamily="@font/font_minecraft"
+                                android:text="Версия MC"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -222,7 +226,7 @@
                         android:id="@+id/btnDetailInstall"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="18dp"
                         android:background="@drawable/btn_red"
                         android:fontFamily="@font/font_minecraft"
                         android:insetTop="0dp"
@@ -238,7 +242,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:indeterminate="true"
                         android:progressTint="@color/mc_red"
                         android:visibility="gone" />
@@ -248,50 +252,51 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="@font/font_minecraft"
-                        android:textColor="@color/mc_red"
-                        android:textSize="10sp"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
                         android:visibility="gone"
-                        tools:text="Загрузка... 45%" />
+                        tools:text="Скачано: 12 МБ / 30 МБ (40%)" />
+
                 </LinearLayout>
 
-                <!-- Compatibility Info -->
+                <!-- Installation Info Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:background="@drawable/bg_card_black"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/font_minecraft"
                         android:text="СОВМЕСТИМОСТЬ"
-                        android:textColor="@color/mc_red"
-                        android:textSize="11sp" />
+                        android:textColor="@color/mc_aqua"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/tvDetailMcVersion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="8dp"
                         android:fontFamily="@font/font_minecraft"
                         android:textColor="@color/text_body"
                         android:textSize="12sp"
-                        tools:text="Minecraft Bedrock 1.20+" />
+                        tools:text="Minecraft Bedrock 1.20 - 1.21+" />
 
                     <TextView
                         android:id="@+id/tvDetailInstallType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="@font/font_minecraft"
                         android:textColor="@color/text_muted"
-                        android:textSize="10sp"
-                        tools:text="Тип установки: Авто-импорт" />
+                        android:textSize="11sp"
+                        tools:text="Тип: Авто-импорт в Minecraft" />
                 </LinearLayout>
 
                 <!-- Description Card -->
@@ -301,7 +306,7 @@
                     android:layout_marginTop="14dp"
                     android:background="@drawable/bg_card_black"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -309,17 +314,17 @@
                         android:fontFamily="@font/font_minecraft"
                         android:text="@string/description_title"
                         android:textColor="@color/mc_red"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/tvDetailDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/font_minecraft"
                         android:lineSpacingExtra="3dp"
                         android:textColor="@color/text_body"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         tools:text="Описание..." />
                 </LinearLayout>
 
@@ -329,9 +334,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
+                    android:layout_marginBottom="24dp"
                     android:background="@drawable/bg_card_black"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -339,7 +345,7 @@
                         android:fontFamily="@font/font_minecraft"
                         android:text="@string/changelog_title"
                         android:textColor="@color/mc_gold"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/tvDetailChangelog"
@@ -349,58 +355,8 @@
                         android:fontFamily="@font/font_minecraft"
                         android:lineSpacingExtra="2dp"
                         android:textColor="@color/text_body"
-                        android:textSize="11sp"
+                        android:textSize="12sp"
                         tools:text="Список изменений..." />
-                </LinearLayout>
-
-                <!-- Reviews & Rating Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="24dp"
-                    android:background="@drawable/bg_card_black"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/font_minecraft"
-                            android:text="@string/reviews_title"
-                            android:textColor="@color/mc_aqua"
-                            android:textSize="11sp" />
-
-                        <!-- Red Rate Button -->
-                        <Button
-                            android:id="@+id/btnRate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="32dp"
-                            android:background="@drawable/btn_red"
-                            android:fontFamily="@font/font_minecraft"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"
-                            android:paddingHorizontal="12dp"
-                            android:text="@string/rate_button"
-                            android:textColor="@color/white"
-                            android:textSize="9sp"
-                            app:backgroundTint="@null" />
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvReviews"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:nestedScrollingEnabled="false"
-                        tools:listitem="@layout/item_review" />
                 </LinearLayout>
 
             </LinearLayout>

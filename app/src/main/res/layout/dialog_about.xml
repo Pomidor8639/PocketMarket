@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#161822"
+    android:background="#12131A"
     android:orientation="vertical"
     android:padding="22dp">
 
@@ -22,19 +22,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="12dp"
             android:fontFamily="@font/font_minecraft"
             android:text="О ПРИЛОЖЕНИИ"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="14dp"
-        android:background="#262B3A" />
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#212433" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
         android:fontFamily="@font/font_minecraft"
         android:text="PocketMarket v1.0.0"
         android:textColor="@color/mc_red"
-        android:textSize="13sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,26 +52,55 @@
         android:lineSpacingExtra="3dp"
         android:text="Независимый каталог модов, текстур-паков и модифицированных сборок для Minecraft: Bedrock Edition."
         android:textColor="@color/text_body"
-        android:textSize="10sp" />
+        android:textSize="11sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/font_minecraft"
-        android:text="Лицензия: GNU GPLv3\nПлатформа: Android 7.0+\nВерсия: 1.0.0"
+        android:text="Лицензия: GNU GPLv3\nПлатформа: Android 7.0+\nСборка: Официальный релиз"
         android:textColor="@color/text_muted"
-        android:textSize="9sp" />
+        android:textSize="10sp" />
+
+    <!-- GitHub Link Button with Octocat Icon -->
+    <LinearLayout
+        android:id="@+id/btnAboutGithub"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/bg_icon_rounded"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="14dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_github"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/font_minecraft"
+            android:text="GitHub Репозиторий"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnAboutClose"
         android:layout_width="match_parent"
         android:layout_height="42dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/btn_red"
         android:fontFamily="@font/font_minecraft"
         android:text="ЗАКРЫТЬ"
         android:textColor="@color/white"
-        android:textSize="11sp" />
+        android:textSize="12sp" />
 
 </LinearLayout>
