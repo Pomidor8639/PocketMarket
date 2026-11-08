@@ -22,7 +22,7 @@ public class FontUtils {
                 minecraftTypeface = ResourcesCompat.getFont(context, R.font.minecraft);
             } catch (Exception e) {
                 try {
-                    minecraftTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/minecraft.otf");
+                    minecraftTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/minecraft.ttf");
                 } catch (Exception ignored) {
                     minecraftTypeface = Typeface.MONOSPACE;
                 }

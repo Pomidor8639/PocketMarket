@@ -24,6 +24,8 @@ local.properties
 # Documentation and notes - Local only
 MEMORY.md
 memory.md
+context.md
+Context.md
 
 # Backend source - Server only
 backend/

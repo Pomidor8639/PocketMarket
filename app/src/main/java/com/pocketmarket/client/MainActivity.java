@@ -30,7 +30,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private EditText etSearch;
-    private ImageView btnRefresh;
     private TextView tabMods;
     private TextView tabTextures;
     private TextView tabApks;
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         etSearch = findViewById(R.id.etSearch);
-        btnRefresh = findViewById(R.id.btnRefresh);
         tabMods = findViewById(R.id.tabMods);
         tabTextures = findViewById(R.id.tabTextures);
         tabApks = findViewById(R.id.tabApks);
@@ -150,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupListeners() {
         swipeRefresh.setOnRefreshListener(() -> loadItems(false));
-        btnRefresh.setOnClickListener(v -> loadItems(true));
     }
 
     private void loadItems(boolean showLoading) {
