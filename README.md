@@ -2,12 +2,11 @@
 
 > Независимый каталог и магазин модификаций, текстур и APK-сборок для Minecraft Bedrock Edition.
 
-[![Language](https://img.shields.io/badge/Language-Java_17-orange.svg?style=flat-square)](#)
-[![Platform](https://img.shields.io/badge/Platform-Android_7.0+-brightgreen.svg?style=flat-square)](#)
-[![Backend](https://img.shields.io/badge/Backend-Node.js_Express-green.svg?style=flat-square)](#)
-[![License](https://img.shields.io/badge/License-GPLv2-blue.svg?style=flat-square)](LICENSE)
-[![Build](https://img.shields.io/badge/Build-Gradle_8.7-informational.svg?style=flat-square)](#)
-[![UI Theme](https://img.shields.io/badge/UI_Theme-Minecraft_Black-black.svg?style=flat-square)](#)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](#)
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](#)
+[![Backend](https://img.shields.io/badge/Backend-Node.js-informational.svg)](#)
+[![Gradle](https://img.shields.io/badge/Gradle-8.7-blueviolet.svg)](#)
 
 ---
 
@@ -22,7 +21,7 @@
 | Тема оформления | Глубокий черный стиль (Minecraft Dark `#0C0D11`) |
 | Шрифт | Пиксельный шрифт Minecraft (`minecraft.otf`) |
 | Иконки | Векторные наборы Google Material Icons |
-| Лицензия | GNU General Public License v2.0 (GPL-2.0) |
+| Лицензия | GNU General Public License v3.0 (GPL-3.0) |
 
 ---
 
@@ -173,4 +172,4 @@ cd PocketMarket
 ---
 
 ## Лицензия
-Проект распространяется под лицензией GNU General Public License v2.0 (GPL-2.0). Полный текст лицензии доступен в файле [LICENSE](LICENSE).
+Проект распространяется под лицензией GNU General Public License v3.0 (GPL-3.0). Полный текст лицензии доступен в файле [LICENSE](LICENSE).
