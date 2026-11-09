@@ -20,6 +20,8 @@ local.properties
 *.env
 .env.*
 *.secret
+*.jks
+*.keystore
 
 # Documentation and notes - Local only
 MEMORY.md
