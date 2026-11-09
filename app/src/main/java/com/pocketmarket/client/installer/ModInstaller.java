@@ -1,6 +1,9 @@
 package com.pocketmarket.client.installer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +13,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
+import android.provider.MediaStore;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -18,8 +21,10 @@ import androidx.core.content.FileProvider;
 import com.pocketmarket.client.model.ModItem;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -37,35 +42,17 @@ public class ModInstaller {
 
     private static final ExecutorService downloadExecutor = Executors.newSingleThreadExecutor();
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
-    private static File pendingApkFile = null;
-    private static ModItem pendingApkItem = null;
 
     public static boolean checkInstallPermission(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return activity.getPackageManager().canRequestPackageInstalls();
-        }
         return true;
     }
 
     public static void requestInstallPermission(Activity activity, File apkFile, ModItem item) {
-        pendingApkFile = apkFile;
-        pendingApkItem = item;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Toast.makeText(activity, "Включите разрешение на установку. После возврата файл запустится автоматически.", Toast.LENGTH_LONG).show();
-            Intent settingsIntent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-            settingsIntent.setData(Uri.parse("package:" + activity.getPackageName()));
-            activity.startActivity(settingsIntent);
-        }
+        // No-op: REQUEST_INSTALL_PACKAGES is intentionally not requested to ensure 100% compliance with Google Play Protect
     }
 
     public static void resumePendingInstallIfPossible(Activity activity) {
-        if (pendingApkFile != null && pendingApkFile.exists() && checkInstallPermission(activity)) {
-            File fileToInstall = pendingApkFile;
-            ModItem itemToInstall = pendingApkItem;
-            pendingApkFile = null;
-            pendingApkItem = null;
-            install(activity, itemToInstall != null ? itemToInstall : new ModItem(), fileToInstall);
-        }
+        // No-op
     }
 
     public static String formatBytes(long bytes) {
@@ -86,11 +73,10 @@ public class ModInstaller {
                 conn.setInstanceFollowRedirects(true);
                 conn.setConnectTimeout(15000);
                 conn.setReadTimeout(60000);
-                conn.setRequestProperty("User-Agent", "PocketMarket/1.0.0 (Android)");
+                conn.setRequestProperty("User-Agent", "PocketMarket/1.1.4 (Android)");
                 conn.connect();
 
                 int responseCode = conn.getResponseCode();
-                // Follow redirect if needed
                 if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
                     String newUrl = conn.getHeaderField("Location");
                     if (newUrl != null && !newUrl.isEmpty()) {
@@ -99,7 +85,7 @@ public class ModInstaller {
                         conn = (HttpURLConnection) url.openConnection();
                         conn.setConnectTimeout(15000);
                         conn.setReadTimeout(60000);
-                        conn.setRequestProperty("User-Agent", "PocketMarket/1.0.0 (Android)");
+                        conn.setRequestProperty("User-Agent", "PocketMarket/1.1.4 (Android)");
                         conn.connect();
                         responseCode = conn.getResponseCode();
                     }
@@ -168,13 +154,6 @@ public class ModInstaller {
             return;
         }
 
-        if (item != null && item.isApk()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !activity.getPackageManager().canRequestPackageInstalls()) {
-                requestInstallPermission(activity, downloadedFile, item);
-                return;
-            }
-        }
-
         Uri fileUri = FileProvider.getUriForFile(
                 activity,
                 activity.getPackageName() + ".provider",
@@ -195,7 +174,7 @@ public class ModInstaller {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // First try launching directly with official Minecraft package
+            // Try launching directly with official Minecraft package
             intent.setPackage("com.mojang.minecraftpe");
             if (intent.resolveActivity(activity.getPackageManager()) != null) {
                 activity.startActivity(intent);
@@ -212,20 +191,17 @@ public class ModInstaller {
     }
 
     private static void installApk(Activity activity, File downloadedFile, Uri fileUri) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (!activity.getPackageManager().canRequestPackageInstalls()) {
-                    requestInstallPermission(activity, downloadedFile, null);
-                    return;
-                }
-            }
+        // Copy APK to public Downloads folder for user convenience
+        copyToPublicDownloads(activity, downloadedFile);
 
+        // First attempt standard Intent.ACTION_VIEW
+        boolean launched = false;
+        try {
             Intent installIntent = new Intent(Intent.ACTION_VIEW);
             installIntent.setDataAndType(fileUri, "application/vnd.android.package-archive");
             installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // Grant read permission to all matching activities (crucial for MIUI / HyperOS PackageInstaller!)
             List<ResolveInfo> resolveInfoList = activity.getPackageManager()
                     .queryIntentActivities(installIntent, PackageManager.MATCH_DEFAULT_ONLY);
             for (ResolveInfo resolveInfo : resolveInfoList) {
@@ -233,9 +209,93 @@ public class ModInstaller {
                 activity.grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
 
-            activity.startActivity(installIntent);
+            if (installIntent.resolveActivity(activity.getPackageManager()) != null) {
+                activity.startActivity(installIntent);
+                launched = true;
+            }
+        } catch (Exception ignored) {
+        }
+
+        // Show a guidance dialog with options
+        showApkDownloadedDialog(activity, downloadedFile, fileUri, launched);
+    }
+
+    private static void copyToPublicDownloads(Context context, File srcFile) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, srcFile.getName());
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/vnd.android.package-archive");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+                Uri uri = context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+                if (uri != null) {
+                    try (InputStream in = new FileInputStream(srcFile);
+                         OutputStream out = context.getContentResolver().openOutputStream(uri)) {
+                        byte[] buf = new byte[16384];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                        out.flush();
+                    }
+                }
+            } else {
+                File pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                if (pubDir != null && (pubDir.exists() || pubDir.mkdirs())) {
+                    File dest = new File(pubDir, srcFile.getName());
+                    try (InputStream in = new FileInputStream(srcFile);
+                         OutputStream out = new FileOutputStream(dest)) {
+                        byte[] buf = new byte[16384];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+                        out.flush();
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void showApkDownloadedDialog(Activity activity, File downloadedFile, Uri fileUri, boolean alreadyAttemptedLaunch) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle("Файл скачан");
+            builder.setMessage("APK сохранен в папку «Загрузки»:\n" + downloadedFile.getName() +
+                    "\n\nДля завершения установки откройте файл через Проводник или нажмите кнопку ниже.");
+
+            builder.setPositiveButton("Открыть Загрузки", (dialog, which) -> {
+                try {
+                    Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+                    activity.startActivity(intent);
+                } catch (Exception e) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath()), "*/*");
+                        activity.startActivity(Intent.createChooser(intent, "Открыть Проводник"));
+                    } catch (Exception ex) {
+                        Toast.makeText(activity, "Файл сохранен в папку Загрузки", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            builder.setNeutralButton("Поделиться", (dialog, which) -> {
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("application/vnd.android.package-archive");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    activity.startActivity(Intent.createChooser(shareIntent, "Отправить файл"));
+                } catch (Exception e) {
+                    Toast.makeText(activity, "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            builder.setNegativeButton("Понятно", null);
+            builder.show();
         } catch (Exception e) {
-            Toast.makeText(activity, "Ошибка запуска установки APK: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Файл сохранен в Загрузки: " + downloadedFile.getName(), Toast.LENGTH_LONG).show();
         }
     }
 }

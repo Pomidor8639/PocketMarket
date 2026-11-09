@@ -131,7 +131,7 @@ public class DetailActivity extends AppCompatActivity {
             tvDetailCategoryBadge.setText("APK МОД (.APK)");
             tvDetailCategoryBadge.setTextColor(ContextCompat.getColor(this, R.color.mc_gold));
             btnDetailInstall.setText(R.string.download_apk);
-            tvDetailInstallType.setText("Тип установки: Системный установщик Android (PackageInstaller)");
+            tvDetailInstallType.setText("Тип установки: Сохранение в Загрузки / Установка через Проводник");
         } else if (isTexture) {
             detailHeaderCard.setBackgroundResource(R.drawable.bg_card_black);
             ivDetailIcon.setImageResource(R.drawable.ic_palette);

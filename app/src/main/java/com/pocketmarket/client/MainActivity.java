@@ -460,7 +460,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tvAboutVersion = dialog.findViewById(R.id.tvAboutVersion);
         if (tvAboutVersion != null) {
-            String verName = "1.1.3";
+            String verName = "1.1.4";
             int verCode = 4;
             try {
                 android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -530,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDrawerUserSection() {
         if (tvDrawerVersion != null) {
-            String verName = "1.1.3";
+            String verName = "1.1.4";
             int verCode = 4;
             try {
                 android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
