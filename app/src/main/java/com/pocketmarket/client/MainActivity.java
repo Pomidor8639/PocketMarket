@@ -71,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
     // Version filter
     private LinearLayout llVersionContainer;
     private final List<String> mcVersionList = new ArrayList<>(Arrays.asList(
-            "Все", "26.40", "1.21.51", "1.21.31", "1.20.81", "1.20.51"
+            "1.21.51", "1.21.31", "1.20.81", "1.20.51"
     ));
+    private final List<String> customVersionList = new ArrayList<>();
 
     // Drawer user profile & version views
     private ImageView ivDrawerUserAvatar;
@@ -210,45 +211,16 @@ public class MainActivity extends AppCompatActivity {
         if (llVersionContainer == null) return;
         llVersionContainer.removeAllViews();
 
-        for (String version : mcVersionList) {
-            TextView chip = new TextView(this);
-            chip.setText(version);
-            chip.setTextSize(11);
-            chip.setTypeface(FontUtils.getMinecraftFont(this));
+        // 1. Chip "Все"
+        addVersionChip("Все", "all".equals(currentVersion), v -> {
+            currentVersion = "all";
+            setupVersionFilter();
+            loadItems(true);
+        });
 
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            lp.setMargins(0, 0, 16, 0);
-            chip.setLayoutParams(lp);
-
-            boolean isSelected = ("Все".equals(version) && "all".equals(currentVersion)) ||
-                    version.equals(currentVersion);
-
-            if (isSelected) {
-                chip.setBackgroundResource(R.drawable.bg_chip_version_selected);
-                chip.setTextColor(ContextCompat.getColor(this, R.color.mc_red));
-            } else {
-                chip.setBackgroundResource(R.drawable.bg_chip_version);
-                chip.setTextColor(ContextCompat.getColor(this, R.color.text_body));
-            }
-
-            chip.setOnClickListener(v -> {
-                v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(60).withEndAction(() -> {
-                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
-                }).start();
-                currentVersion = "Все".equals(version) ? "all" : version;
-                setupVersionFilter();
-                loadItems(true);
-            });
-
-            llVersionContainer.addView(chip);
-        }
-
-        // Custom version chip button
+        // 2. Chip "Ввести свою" right at the beginning (in place of 26.40)
         TextView customChip = new TextView(this);
-        customChip.setText("+ Ввести свою");
+        customChip.setText("Ввести свою");
         customChip.setTextSize(11);
         customChip.setTypeface(FontUtils.getMinecraftFont(this));
         LinearLayout.LayoutParams customLp = new LinearLayout.LayoutParams(
@@ -257,8 +229,16 @@ public class MainActivity extends AppCompatActivity {
         );
         customLp.setMargins(0, 0, 16, 0);
         customChip.setLayoutParams(customLp);
-        customChip.setBackgroundResource(R.drawable.bg_chip_version);
-        customChip.setTextColor(ContextCompat.getColor(this, R.color.mc_gold));
+
+        boolean isCustomSelected = !currentVersion.equals("all") && !mcVersionList.contains(currentVersion);
+        if (isCustomSelected) {
+            customChip.setBackgroundResource(R.drawable.bg_chip_version_selected);
+            customChip.setTextColor(ContextCompat.getColor(this, R.color.mc_red));
+        } else {
+            customChip.setBackgroundResource(R.drawable.bg_chip_version);
+            customChip.setTextColor(ContextCompat.getColor(this, R.color.mc_gold));
+        }
+
         customChip.setOnClickListener(v -> {
             v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(60).withEndAction(() -> {
                 v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
@@ -266,6 +246,57 @@ public class MainActivity extends AppCompatActivity {
             showCustomVersionDialog();
         });
         llVersionContainer.addView(customChip);
+
+        // 3. Custom entered versions (displayed right after "Ввести свою")
+        for (String customVer : customVersionList) {
+            boolean isSelected = customVer.equals(currentVersion);
+            addVersionChip(customVer, isSelected, v -> {
+                currentVersion = customVer;
+                setupVersionFilter();
+                loadItems(true);
+            });
+        }
+
+        // 4. Preset versions (1.21.51, 1.21.31, 1.20.81, 1.20.51)
+        for (String version : mcVersionList) {
+            boolean isSelected = version.equals(currentVersion);
+            addVersionChip(version, isSelected, v -> {
+                currentVersion = version;
+                setupVersionFilter();
+                loadItems(true);
+            });
+        }
+    }
+
+    private void addVersionChip(String text, boolean isSelected, View.OnClickListener onClickListener) {
+        TextView chip = new TextView(this);
+        chip.setText(text);
+        chip.setTextSize(11);
+        chip.setTypeface(FontUtils.getMinecraftFont(this));
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        lp.setMargins(0, 0, 16, 0);
+        chip.setLayoutParams(lp);
+
+        if (isSelected) {
+            chip.setBackgroundResource(R.drawable.bg_chip_version_selected);
+            chip.setTextColor(ContextCompat.getColor(this, R.color.mc_red));
+        } else {
+            chip.setBackgroundResource(R.drawable.bg_chip_version);
+            chip.setTextColor(ContextCompat.getColor(this, R.color.text_body));
+        }
+
+        chip.setOnClickListener(v -> {
+            v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(60).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(80).start();
+            }).start();
+            onClickListener.onClick(v);
+        });
+
+        llVersionContainer.addView(chip);
     }
 
     private void showCustomVersionDialog() {
@@ -283,6 +314,11 @@ public class MainActivity extends AppCompatActivity {
         EditText etVersion = dialog.findViewById(R.id.etCustomVersionInput);
         View btnCancel = dialog.findViewById(R.id.btnCancelCustomVersion);
         View btnApply = dialog.findViewById(R.id.btnApplyCustomVersion);
+
+        if (etVersion != null && !currentVersion.equals("all") && !mcVersionList.contains(currentVersion)) {
+            etVersion.setText(currentVersion);
+            etVersion.setSelection(currentVersion.length());
+        }
 
         if (btnCancel != null) {
             btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -302,8 +338,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 String cleanVer = input.replaceFirst("^[vV]", "").trim();
-                if (!mcVersionList.contains(cleanVer)) {
-                    mcVersionList.add(cleanVer);
+                if (!customVersionList.contains(cleanVer) && !mcVersionList.contains(cleanVer)) {
+                    customVersionList.add(0, cleanVer);
                 }
                 currentVersion = cleanVer;
                 setupVersionFilter();
@@ -424,8 +460,8 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tvAboutVersion = dialog.findViewById(R.id.tvAboutVersion);
         if (tvAboutVersion != null) {
-            String verName = "1.1.0";
-            int verCode = 2;
+            String verName = "1.1.1";
+            int verCode = 3;
             try {
                 android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
                 verName = pi.versionName;
@@ -494,8 +530,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDrawerUserSection() {
         if (tvDrawerVersion != null) {
-            String verName = "1.1.0";
-            int verCode = 2;
+            String verName = "1.1.1";
+            int verCode = 3;
             try {
                 android.content.pm.PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
                 verName = pi.versionName;

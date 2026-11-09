@@ -447,7 +447,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:fontFamily="@font/font_minecraft"
-                android:text="PocketMarket v1.1.0 (сборка 2)"
+                android:text="PocketMarket v1.1.1 (сборка 3)"
                 android:textColor="@color/mc_red"
                 android:textSize="10sp" />
         </LinearLayout>

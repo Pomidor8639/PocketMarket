@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/font_minecraft"
-        android:text="PocketMarket v1.1.0 (Сборка 2)"
+        android:text="PocketMarket v1.1.1 (Сборка 3)"
         android:textColor="@color/mc_red"
         android:textSize="14sp" />
 
