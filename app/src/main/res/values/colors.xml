@@ -17,6 +17,7 @@
     <color name="btn_red_stroke">#FF6659</color>
     <color name="tab_red_selected">#241010</color>
     <color name="mc_red">#FF4D4D</color>
+    <color name="mc_icon_bg">#E83030</color>
     
     <!-- Minecraft Accents -->
     <color name="mc_green">#55FF55</color>
